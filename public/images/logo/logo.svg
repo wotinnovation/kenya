@@ -1,0 +1,14 @@
+<svg width="185" height="41" viewBox="0 0 185 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Kenya flag stripe accent -->
+  <rect x="0" y="0" width="7" height="13" fill="#006600"/>
+  <rect x="0" y="13" width="7" height="1.5" fill="#FFFFFF"/>
+  <rect x="0" y="14.5" width="7" height="12" fill="#BB0000"/>
+  <rect x="0" y="26.5" width="7" height="1.5" fill="#FFFFFF"/>
+  <rect x="0" y="28" width="7" height="13" fill="#000000"/>
+  <!-- Maasai shield overlay -->
+  <ellipse cx="3.5" cy="20.5" rx="3.5" ry="8" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+  <!-- "KENYA" bold text -->
+  <text x="14" y="30" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="800" fill="#333E48" letter-spacing="1.5">KENYA</text>
+  <!-- Red dot accent (matches original logo style) -->
+  <circle cx="180" cy="36" r="4.3" fill="#006600"/>
+</svg>
