@@ -6,7 +6,7 @@ export const blogItems = [
     height: 240,
     date: "28 Apr 2022",
     title: "GameConsole Destiny Special Edition",
-  },
+  }, 
 ];
 
 export const blogItems2 = [
