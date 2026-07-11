@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,7 +8,9 @@ import WishlistLength from "../common/WishlistLength";
 import NavCategories from "./NavCategories";
 import Nav from "./Nav";
 import SearchForm from "./SearchForm";
+import { useAuth } from "@/context/AuthContext";
 export default function Header7() {
+  const { isAuthenticated, logout } = useAuth();
   return (
     <header className="tf-header style-3">
       <div className="inner-header">
@@ -82,8 +85,9 @@ export default function Header7() {
                 <ul className="nav-icon justify-content-xl-center d-xl-none">
                   <li className="nav-account">
                     <a
-                      href="#log"
-                      data-bs-toggle="modal"
+                      {...(isAuthenticated
+                        ? { href: "#", onClick: (e) => { e.preventDefault(); logout(); } }
+                        : { href: "#log", "data-bs-toggle": "modal" })}
                       className="link nav-icon-item"
                     >
                       <span>
@@ -108,7 +112,7 @@ export default function Header7() {
                           />
                         </svg>
                       </span>
-                      <p className="body-small">Sign in</p>
+                      <p className="body-small">{isAuthenticated ? "Logout" : "Sign in"}</p>
                     </a>
                   </li>
                   <li className="nav-cart">

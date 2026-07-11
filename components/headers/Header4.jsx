@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Nav from "./Nav";
 import Link from "next/link";
@@ -6,7 +7,9 @@ import SearchForm from "./SearchForm";
 import LanguageSelect from "../common/LanguageSelect";
 import CurrencySelect from "../common/CurrencySelect";
 import NavCategories from "./NavCategories";
+import { useAuth } from "@/context/AuthContext";
 export default function Header4({ fullWidth = false }) {
+  const { isAuthenticated, logout } = useAuth();
   return (
     <header className="tf-header">
       <div className="inner-header line-bt">
@@ -34,8 +37,9 @@ export default function Header4({ fullWidth = false }) {
                 <ul className="nav-icon justify-content-xl-center">
                   <li className="nav-account">
                     <a
-                      href="#log"
-                      data-bs-toggle="modal"
+                      {...(isAuthenticated
+                        ? { href: "#", onClick: (e) => { e.preventDefault(); logout(); } }
+                        : { href: "#log", "data-bs-toggle": "modal" })}
                       className="link nav-icon-item link-fill"
                     >
                       <span>
@@ -60,7 +64,7 @@ export default function Header4({ fullWidth = false }) {
                           />
                         </svg>
                       </span>
-                      <p className="body-small">Sign in</p>
+                      <p className="body-small">{isAuthenticated ? "Logout" : "Sign in"}</p>
                     </a>
                   </li>
                   <li className="nav-support d-none d-xl-block">

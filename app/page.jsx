@@ -4,12 +4,8 @@ import Categories from "@/components/common/Categories";
 import Hero from "@/components/homes/home-6/Hero";
 import React from "react";
 import Collections from "@/components/homes/home-6/Collections";
-import Products1 from "@/components/homes/home-6/Products1";
-import Products2 from "@/components/homes/home-6/Products2";
-import Products3 from "@/components/homes/home-6/Products3";
+import CategoryProductsSwiper from "@/components/common/CategoryProductsSwiper";
 import BrandsSlider from "@/components/common/BrandsSlider";
-import Products4 from "@/components/common/Products2";
-import Products5 from "@/components/common/Products5";
 import Footer1 from "@/components/footers/Footer1";
 import Features2 from "@/components/common/Features2";
 
@@ -25,12 +21,14 @@ export default function Home() {
       <Hero />
       <Categories parentClass="tf-sp-7" />
       <Collections />
-      <Products1 />
-      <Products2 />
-      <Products3 />
+      <CategoryProductsSwiper categorySlug="it-accessories" />
+      <CategoryProductsSwiper categorySlug="display" />
+      <CategoryProductsSwiper categorySlug="home-smart-security" />
       <BrandsSlider />
-      <Products4 parentClass="tf-sp-2" />
-      <Products5 />
+      <CategoryProductsSwiper categorySlug="hikvision-store" parentClass="tf-sp-2" />
+      <CategoryProductsSwiper categorySlug="gaming-pc-and-case" />
+      <CategoryProductsSwiper categorySlug="computers-and-laptops" />
+      <CategoryProductsSwiper categorySlug="security-devices" />
       <Features2 />
       <Footer1 />
     </>

@@ -1,5 +1,6 @@
 "use client";
 import { allProducts } from "@/data/products";
+import { backendImageUrl } from "@/graphql/imageUrl";
 // import { openCartModal } from "@/utlis/openCartModal";
 // import { openWistlistModal } from "@/utlis/openWishlist";
 
@@ -16,6 +17,7 @@ export default function Context({ children }) {
   const [compareItem, setCompareItem] = useState([1, 2, 3, 4]);
   const [quickViewItem, setQuickViewItem] = useState(allProducts[0]);
   const [quickAddItem, setQuickAddItem] = useState(1);
+  const [quoteProduct, setQuoteProduct] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   useEffect(() => {
     const subtotal = cartProducts.reduce((accumulator, product) => {
@@ -30,12 +32,22 @@ export default function Context({ children }) {
     }
     return false;
   };
-  const addProductToCart = (id, qty, isModal = true) => {
+  const addProductToCart = (productOrId, qty, isModal = true) => {
+    const isRealProduct = typeof productOrId === "object" && productOrId !== null;
+    const id = isRealProduct ? productOrId.id : productOrId;
     if (!isAddedToCartProducts(id)) {
-      const item = {
-        ...allProducts.filter((elm) => elm.id == id)[0],
-        quantity: qty ? qty : 1,
-      };
+      const item = isRealProduct
+        ? {
+            id: productOrId.id,
+            title: productOrId.name,
+            imgSrc: backendImageUrl(productOrId.image),
+            price: productOrId.salePrice || productOrId.price,
+            quantity: qty ? qty : 1,
+          }
+        : {
+            ...allProducts.filter((elm) => elm.id == id)[0],
+            quantity: qty ? qty : 1,
+          };
       setCartProducts((pre) => [...pre, item]);
       if (isModal) {
         // openCartModal();
@@ -126,6 +138,8 @@ export default function Context({ children }) {
     setQuickViewItem,
     quickAddItem,
     setQuickAddItem,
+    quoteProduct,
+    setQuoteProduct,
     addToCompareItem,
     isAddedtoCompareItem,
     removeFromCompareItem,

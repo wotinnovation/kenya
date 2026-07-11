@@ -4,9 +4,13 @@ import "../public/scss/main.scss";
 import "photoswipe/dist/photoswipe.css";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { Toaster } from "react-hot-toast";
+import ApolloWrapper from "@/graphql/ApolloWrapper";
+import AuthProvider from "@/context/AuthContext";
 import Cart from "@/components/modals/Cart";
 import Login from "@/components/modals/Login";
 import Register from "@/components/modals/Register";
+import RequestQuote from "@/components/modals/RequestQuote";
 import ScrollTop from "@/components/common/ScrollTop";
 import Quickview from "@/components/modals/Quickview";
 import MobileMenu from "@/components/modals/MobileMenu";
@@ -128,19 +132,25 @@ export default function RootLayout({ children }) {
       </head>
       <body suppressHydrationWarning>
         <div id="wrapper">
-          <Context>
-            {children}
-            <Login />
-            <Register />
-            <Cart />
-            <Quickview />
-            <MobileMenu />
-            <ScrollTop />
-            <Toolbar />
-            <Search />
-            <NewsLetter />
-            <AddParallax />
-          </Context>
+          <ApolloWrapper>
+            <AuthProvider>
+              <Context>
+                {children}
+                <Login />
+                <Register />
+                <RequestQuote />
+                <Cart />
+                <Quickview />
+                <MobileMenu />
+                <ScrollTop />
+                <Toolbar />
+                <Search />
+                <NewsLetter />
+                <AddParallax />
+                <Toaster position="top-right" />
+              </Context>
+            </AuthProvider>
+          </ApolloWrapper>
         </div>
       </body>
     </html>

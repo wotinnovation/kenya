@@ -9,6 +9,35 @@
 
 // Main Styles
 @use "app.scss";
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.shimmer {
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 8px;
+}
+.shimmer-card-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 12px;
+}
+.shimmer-line {
+  height: 14px;
+  margin-bottom: 8px;
+}
+.shimmer-line.w-60 {
+  width: 60%;
+}
+.shimmer-line.w-40 {
+  width: 40%;
+}
 @keyframes infiniteslider {
   0% {
     transform: translate3d(0, 0, 0);

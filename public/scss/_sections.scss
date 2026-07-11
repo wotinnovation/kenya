@@ -251,6 +251,8 @@
 .cls-category {
   .img-box {
     border-radius: 8px;
+    min-height: 220px;
+    max-height: 320px;
   }
 
   &.style-abs {

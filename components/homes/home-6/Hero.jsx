@@ -1,11 +1,60 @@
-import { products24 } from "@/data/products";
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import AddToCart from "@/components/common/AddToCart";
 import AddToWishlist from "@/components/common/AddToWishlist";
-import AddToQuickview from "@/components/common/AddToQuickview";
+import RequestQuoteButton from "@/components/common/RequestQuoteButton";
+import { useProductsListLazyQuery } from "@/graphql/generated";
+import { backendImageUrl } from "@/graphql/imageUrl";
+
+const POPULATED_CATEGORIES = [
+  "it-accessories",
+  "display",
+  "home-smart-security",
+  "hikvision-store",
+];
+
+function shuffle(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
 export default function Hero() {
+  const [heroProducts, setHeroProducts] = useState([]);
+  const [fetchProducts] = useProductsListLazyQuery();
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const categories = shuffle(POPULATED_CATEGORIES).slice(0, 3);
+      const results = await Promise.all(
+        categories.map((slug) =>
+          fetchProducts({
+            variables: { category: slug, limit: 12, status: "publish" },
+          })
+        )
+      );
+      if (cancelled) return;
+      const picked = results
+        .map((r) => {
+          const list = r.data?.products?.products ?? [];
+          return list[Math.floor(Math.random() * list.length)];
+        })
+        .filter(Boolean);
+      setHeroProducts(picked);
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // Fetch once on mount; fetchProducts identity is stable across renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <section
       className="has-bg-img tf-sp-5"
@@ -16,20 +65,20 @@ export default function Hero() {
           <div className="product-wrap">
             <div className="content">
               <div className="box-title">
-                <h1 className="font-5 text-cl-5">
+                <h1 className="font-5 text-white">
                   Xiaomi <br />
                   Redmi Note 10 Pro
                 </h1>
-                <p className="property main-title-3">
+                <p className="property main-title-3 text-white">
                   Display: 6.7-inch AMOLED screen <br />
                   Resolution: 2400 x 1080 FHD+ 395 PPI
                 </p>
               </div>
-              <h1 className="fw-bold text-secondary">$798.00</h1>
+              <h1 className="fw-bold text-white">$798.00</h1>
             </div>
             <div className="box-btn">
               <Link
-                href={`/shop-default`}
+                href={`/products`}
                 className="tf-btn style-3 hover-link-icon bg-primary"
               >
                 <span className="caption fw-bold text-uppercase">Shop now</span>
@@ -38,22 +87,24 @@ export default function Hero() {
             </div>
           </div>
           <div className="other-item">
-            {products24.map((product) => (
+            {heroProducts.map((product) => {
+              const price = product.salePrice || product.price;
+              return (
               <div
                 key={product.id}
                 className="card-product style-row row-small-2 bg-white radius-8"
               >
                 <div className="card-product-wrapper">
                   <Link
-                    href={`/product-detail/${product.id}`}
+                    href={`/product/${product.slug}`}
                     className="product-img"
                   >
                     <Image
                       className="img-product lazyload"
-                      src={product.imgHover}
-                      alt="image-product"
-                      width={product.width}
-                      height={product.height}
+                      src={backendImageUrl(product.image)}
+                      alt={product.name}
+                      width={80}
+                      height={80}
                     />
                   </Link>
                 </div>
@@ -61,40 +112,40 @@ export default function Hero() {
                   <div className="box-title">
                     <div className="bg-white relative z-5">
                       <p className="caption text-main-2 font-2">
-                        {product.category}
+                        {product.categories?.[0]?.name}
                       </p>
                       <Link
-                        href={`/product-detail/${product.id}`}
+                        href={`/product/${product.slug}`}
                         className="name-product body-md-2 fw-semibold text-secondary link"
                       >
-                        {product.title}
+                        {product.name}
                       </Link>
                     </div>
                     <div className="group-btn">
                       <p className="price-wrap fw-medium">
                         <span className="new-price price-text fw-medium">
-                          ${product.price.toFixed(3)}
-                        </span>
-                        <span className="old-price body-md-2 text-main-2">
-                          ${product.oldPrice.toFixed(3)}
+                          ${price.toFixed(2)}
                         </span>
                       </p>
                       <ul className="list-product-btn flex-row">
-                        <li>
-                          <AddToCart productId={product.id} />
-                        </li>
+                        {price > 0 && (
+                          <li>
+                            <AddToCart product={product} />
+                          </li>
+                        )}
                         <li className="wishlist">
                           <AddToWishlist productId={product.id} />
                         </li>
                         <li>
-                          <AddToQuickview productId={product.id} />
+                          <RequestQuoteButton product={product} />
                         </li>
                       </ul>
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

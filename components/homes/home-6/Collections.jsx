@@ -5,9 +5,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import Link from "next/link";
 import Image from "next/image";
 import { Pagination } from "swiper/modules";
-export default function Collections() {
+export default function Collections({ parentClass = "tf-sp-2 pt-0" }) {
   return (
-    <div>
+    <section className={parentClass}>
       <div className="container">
         <Swiper
           className="swiper tf-sw-categories"
@@ -82,6 +82,6 @@ export default function Collections() {
           <div className="sw-dot-default sw-pagination-categories justify-content-center spd53" />
         </Swiper>
       </div>
-    </div>
+    </section>
   );
 }

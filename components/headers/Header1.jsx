@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Nav from "./Nav";
 import Image from "next/image";
@@ -6,7 +7,9 @@ import SearchForm from "./SearchForm";
 import CartLength from "../common/CartLength";
 import WishlistLength from "../common/WishlistLength";
 import CompareLength from "../common/CompareLength";
+import { useAuth } from "@/context/AuthContext";
 export default function Header1() {
+  const { isAuthenticated, logout } = useAuth();
   return (
     <header className="tf-header style-2">
       <div className="inner-header">
@@ -64,8 +67,9 @@ export default function Header1() {
                 <ul className="nav-icon justify-content-xl-center d-xl-none">
                   <li className="nav-account">
                     <a
-                      href="#log"
-                      data-bs-toggle="modal"
+                      {...(isAuthenticated
+                        ? { href: "#", onClick: (e) => { e.preventDefault(); logout(); } }
+                        : { href: "#log", "data-bs-toggle": "modal" })}
                       className="link nav-icon-item"
                     >
                       <span>
@@ -90,7 +94,7 @@ export default function Header1() {
                           />
                         </svg>
                       </span>
-                      <p className="body-small">Sign in</p>
+                      <p className="body-small">{isAuthenticated ? "Logout" : "Sign in"}</p>
                     </a>
                   </li>
                   <li className="nav-cart">

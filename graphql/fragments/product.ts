@@ -1,0 +1,74 @@
+import { gql } from "@apollo/client";
+
+export const PRODUCT_CARD_FIELDS = gql`
+  fragment ProductCardFields on Product {
+    id
+    name
+    slug
+    price
+    regularPrice
+    salePrice
+    image
+    stock
+    stockStatus
+    categories {
+      id
+      name
+      slug
+    }
+  }
+`;
+
+export const PRODUCT_DETAIL_FIELDS = gql`
+  fragment ProductDetailFields on Product {
+    id
+    name
+    slug
+    description
+    shortDescription
+    isFeatured
+    price
+    regularPrice
+    salePrice
+    sku
+    stock
+    stockStatus
+    image
+    gallery
+    tags
+    attributes {
+      name
+      options
+      visible
+      variation
+    }
+    variations {
+      sku
+      price
+      regularPrice
+      salePrice
+      stock
+      stockStatus
+      image
+      attributes {
+        name
+        option
+      }
+    }
+    priceRange {
+      min
+      max
+      display
+    }
+    categories {
+      id
+      name
+      slug
+    }
+    brand {
+      id
+      name
+      slug
+    }
+  }
+`;

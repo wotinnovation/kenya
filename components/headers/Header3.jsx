@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Nav from "./Nav";
 import Link from "next/link";
@@ -7,7 +8,9 @@ import WishlistLength from "../common/WishlistLength";
 import LanguageSelect from "../common/LanguageSelect";
 import CurrencySelect from "../common/CurrencySelect";
 import NavCategories2 from "./NavCategories2";
+import { useAuth } from "@/context/AuthContext";
 export default function Header3() {
+  const { isAuthenticated, logout } = useAuth();
   return (
     <header className="tf-header style-4">
       <div className="inner-header">
@@ -103,8 +106,10 @@ export default function Header3() {
                   </li>
                   <li className="d-none d-sm-block">
                     <a
-                      href="#log"
-                      data-bs-toggle="modal"
+                      {...(isAuthenticated
+                        ? { href: "#", onClick: (e) => { e.preventDefault(); logout(); } }
+                        : { href: "#log", "data-bs-toggle": "modal" })}
+                      title={isAuthenticated ? "Logout" : "Sign in"}
                       className="d-flex text-main link-svg-fill"
                     >
                       <svg
