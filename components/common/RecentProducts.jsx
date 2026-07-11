@@ -9,6 +9,7 @@ import AddToWishlist from "./AddToWishlist";
 import RequestQuoteButton from "./RequestQuoteButton";
 import { useProductsListQuery } from "@/graphql/generated";
 import { backendImageUrl } from "@/graphql/imageUrl";
+import { formatPrice } from "@/utlis/price";
 
 export default function RecentProducts({
   parentClass = "tf-sp-2",
@@ -102,7 +103,7 @@ export default function RecentProducts({
                     </div>
                     <p className="price-wrap fw-medium">
                       <span className="new-price price-text fw-medium">
-                        ${price.toFixed(2)}
+                        {formatPrice(price)}
                       </span>
                     </p>
                     <div className="d-flex align-items-center gap-2 mt-2">

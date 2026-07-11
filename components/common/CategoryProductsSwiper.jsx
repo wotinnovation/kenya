@@ -10,6 +10,7 @@ import RequestQuoteButton from "@/components/common/RequestQuoteButton";
 import ProductCardShimmer from "@/components/productCards/ProductCardShimmer";
 import { useCategoryBySlugQuery, useProductsListQuery } from "@/graphql/generated";
 import { backendImageUrl } from "@/graphql/imageUrl";
+import { formatPrice } from "@/utlis/price";
 
 export default function CategoryProductsSwiper({
   categorySlug,
@@ -172,7 +173,7 @@ export default function CategoryProductsSwiper({
                       </div>
                       <p className="price-wrap fw-medium">
                         <span className="new-price price-text fw-medium mb-0">
-                          ${price.toFixed(2)}
+                          {formatPrice(price)}
                         </span>
                         {product.salePrice > 0 &&
                           product.regularPrice > product.salePrice && (

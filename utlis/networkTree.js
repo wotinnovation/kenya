@@ -1,0 +1,33 @@
+export const NETWORK_TREE = {
+  name: "NETWORK",
+  slug: "networking-solution-dubai",
+  children: [
+    { name: "5G ROUTERS", slug: "5g-routers" },
+    { name: "ACCESS POINT", slug: "access-point" },
+    { name: "CONTROLLER", slug: "controller" },
+    { name: "CONVERTER", slug: "converter" },
+    { name: "DRONE", slug: "drone" },
+    { name: "EXTENDER", slug: "extender" },
+    { name: "FIREWALL", slug: "firewall" },
+    { name: "INDUSTRIAL SWITCH", slug: "industrial-switch" },
+    { name: "MESH ROUTER", slug: "mesh-router" },
+    { name: "MIFI", slug: "mifi" },
+    { name: "MOBILE ACCESSORIES", slug: "mobile-accessories" },
+    { name: "MODULE", slug: "module" },
+    { name: "MODULE SFP", slug: "module-sfp" },
+    { name: "Omada Accessories", slug: "omada-accessories" },
+    { name: "Omada Converter", slug: "omada-converter" },
+    { name: "Omada Gateways", slug: "omada-gateways" },
+    { name: "Omada Switches", slug: "omada-switches" },
+    { name: "Omada Wireless", slug: "omada-wireless" },
+    { name: "POE ADAPTER", slug: "poe-adapter" },
+    { name: "Routers", slug: "routers" },
+    { name: "SERVER RACK", slug: "server-rack" },
+    { name: "SWITCHES", slug: "switches" },
+    { name: "TRANSCEIVERS", slug: "transceivers" },
+    { name: "USB DONGLE", slug: "usb-dongle" },
+    { name: "WALKIE TALKIE", slug: "walkie-talkie" },
+    { name: "VPN ROUTERS", slug: "vpn-routers" },
+    { name: "4G ROUTERS", slug: "4g-routers" }
+  ]
+};

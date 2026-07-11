@@ -4,13 +4,15 @@ import Image from "next/image";
 import AddToCart from "@/components/common/AddToCart";
 import RequestQuoteButton from "@/components/common/RequestQuoteButton";
 import { backendImageUrl } from "@/graphql/imageUrl";
+import { formatPrice } from "@/utlis/price";
 
 export default function RealProductCard({ product }) {
   const price = product.salePrice || product.price;
-  const hasDiscount =
+  const hasDiscount = Boolean(
     product.salePrice &&
-    product.regularPrice &&
-    product.salePrice < product.regularPrice;
+      product.regularPrice &&
+      product.salePrice < product.regularPrice
+  );
 
   return (
     <div className="card-product style-border">
@@ -34,11 +36,6 @@ export default function RealProductCard({ product }) {
             <RequestQuoteButton product={product} tooltipClass="tooltip-left" />
           </li>
         </ul>
-        {product.stockStatus === "outofstock" && (
-          <div className="box-sale-wrap top-0 start-0 z-5">
-            <p className="small-text">Out of stock</p>
-          </div>
-        )}
       </div>
       <div className="card-product-info">
         <div className="box-title gap-xl-12">
@@ -52,7 +49,7 @@ export default function RealProductCard({ product }) {
           </h6>
           <p className="price-wrap fw-medium">
             <span className="new-price h4 fw-normal text-primary mb-0">
-              ${typeof price === "number" ? price.toFixed(2) : price}
+              {formatPrice(price)}
             </span>
             {hasDiscount && (
               <span className="old-price price-text text-main-2">

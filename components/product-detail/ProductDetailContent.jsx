@@ -11,6 +11,7 @@ import CategoryProductsSwiper from "@/components/common/CategoryProductsSwiper";
 import ProductDetailShimmer from "@/components/product-detail/ProductDetailShimmer";
 import { useProductBySlugQuery } from "@/graphql/generated";
 import { backendImageUrl } from "@/graphql/imageUrl";
+import { formatPrice } from "@/utlis/price";
 
 export default function ProductDetailContent({ slug }) {
   const { data, loading, error } = useProductBySlugQuery({
@@ -25,10 +26,11 @@ export default function ProductDetailContent({ slug }) {
     : [];
   const currentImage = activeImage || images[0];
   const price = product?.salePrice || product?.price;
-  const hasDiscount =
+  const hasDiscount = Boolean(
     product?.salePrice &&
-    product?.regularPrice &&
-    product.salePrice < product.regularPrice;
+      product?.regularPrice &&
+      product.salePrice < product.regularPrice
+  );
 
   const primaryCategory = product?.categories?.[0];
   const parentCategory = primaryCategory?.parent;
@@ -143,7 +145,7 @@ export default function ProductDetailContent({ slug }) {
                 )}
                 <p className="price-wrap fw-medium mb-3">
                   <span className="new-price h3 fw-normal text-primary mb-0">
-                    ${typeof price === "number" ? price.toFixed(2) : price}
+                    {formatPrice(price)}
                   </span>
                   {hasDiscount && (
                     <span className="old-price price-text text-main-2 ms-2">
@@ -152,23 +154,31 @@ export default function ProductDetailContent({ slug }) {
                   )}
                 </p>
                 <p className="mb-3">
-                  {product.stockStatus === "instock" ? (
-                    <span className="text-success">
-                      In stock{product.stock ? ` (${product.stock} available)` : ""}
-                    </span>
-                  ) : (
-                    <span className="text-danger">Out of stock</span>
-                  )}
+                  <span className="text-success">
+                    In stock{product.stock ? ` (${product.stock} available)` : ""}
+                  </span>
                 </p>
                 {product.shortDescription && (
                   <p className="mb-3">{product.shortDescription}</p>
                 )}
-                {(product.sku || product.model) && (
+                {product.sku && (
+                  <p className="body-text-3 mb-1">SKU: {product.sku}</p>
+                )}
+                {product.categories?.length > 0 && (
                   <p className="body-text-3 mb-1">
-                    {product.sku && <>SKU: {product.sku}</>}
-                    {product.sku && product.model && <> &middot; </>}
-                    {product.model && <>Model: {product.model}</>}
+                    Categories:{" "}
+                    {product.categories.map((c, i) => (
+                      <React.Fragment key={c.id}>
+                        <Link href={`/products/${c.slug}`} className="link">
+                          {c.name}
+                        </Link>
+                        {i < product.categories.length - 1 ? ", " : ""}
+                      </React.Fragment>
+                    ))}
                   </p>
+                )}
+                {product.model && (
+                  <p className="body-text-3 mb-1">Model: {product.model}</p>
                 )}
                 {product.keyFeatures?.length > 0 && (
                   <div className="mb-3">
@@ -180,6 +190,23 @@ export default function ProductDetailContent({ slug }) {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                )}
+                {product.specifications?.length > 0 && (
+                  <div className="mb-3">
+                    <h6 className="mb-2">Specifications</h6>
+                    <table className="table table-bordered w-100">
+                      <tbody>
+                        {product.specifications.map((spec, i) => (
+                          <tr key={i}>
+                            <td className="fw-semibold" style={{ width: "40%" }}>
+                              {spec.name}
+                            </td>
+                            <td>{spec.value}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
                 <div className="d-flex align-items-center gap-3 mb-3">
@@ -195,41 +222,11 @@ export default function ProductDetailContent({ slug }) {
                   <AddToCart product={product} quantity={quantity} />
                   <RequestQuoteButton product={product} />
                 </div>
-                {product.categories?.length > 0 && (
-                  <p className="body-text-3">
-                    Categories:{" "}
-                    {product.categories.map((c, i) => (
-                      <React.Fragment key={c.id}>
-                        <Link href={`/products/${c.slug}`} className="link">
-                          {c.name}
-                        </Link>
-                        {i < product.categories.length - 1 ? ", " : ""}
-                      </React.Fragment>
-                    ))}
-                  </p>
-                )}
               </div>
               {product.description && (
                 <div className="col-12 mt-4">
                   <h5>Description</h5>
                   <p>{product.description}</p>
-                </div>
-              )}
-              {product.specifications?.length > 0 && (
-                <div className="col-12 mt-4">
-                  <h5>Specifications</h5>
-                  <table className="table table-bordered w-100" style={{ maxWidth: 700 }}>
-                    <tbody>
-                      {product.specifications.map((spec, i) => (
-                        <tr key={i}>
-                          <td className="fw-semibold" style={{ width: "40%" }}>
-                            {spec.name}
-                          </td>
-                          <td>{spec.value}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
                 </div>
               )}
             </div>
