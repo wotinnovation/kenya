@@ -31,11 +31,19 @@ export const PRODUCT_DETAIL_FIELDS = gql`
     regularPrice
     salePrice
     sku
+    model
     stock
     stockStatus
     image
     gallery
     tags
+    keyFeatures
+    specifications {
+      name
+      value
+    }
+    metaTitle
+    metaDescription
     attributes {
       name
       options
@@ -64,6 +72,11 @@ export const PRODUCT_DETAIL_FIELDS = gql`
       id
       name
       slug
+      parent {
+        id
+        name
+        slug
+      }
     }
     brand {
       id
