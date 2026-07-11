@@ -36,7 +36,7 @@ export const shopDetailsPages = [
     id: 1,
     heading: "PRODUCT DETAILS",
     items: [
-      { id: 1, href: "/product-detail/1", text: "Product Detail" },
+      { id: 1, href: "/products", text: "Product Detail" },
     ],
   },
 ];

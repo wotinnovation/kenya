@@ -22,6 +22,7 @@ export default function Home() {
       <Categories parentClass="tf-sp-7" />
       <Collections />
       <CategoryProductsSwiper categorySlug="it-accessories" />
+      <CategoryProductsSwiper categorySlug="networking-solution-dubai" />
       <CategoryProductsSwiper categorySlug="display" />
       <CategoryProductsSwiper categorySlug="home-smart-security" />
       <BrandsSlider />

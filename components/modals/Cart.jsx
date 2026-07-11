@@ -55,17 +55,21 @@ export default function Cart() {
           </div>
         ) : (
           <ul className="popup-body product-list-wrap">
-            {cartProducts.map((product, i) => (
+            {cartProducts.map((product, i) => {
+              const href = product.slug
+                ? `/product/${product.slug}`
+                : `/product-detail/${product.id}`;
+              return (
               <li key={i} className="file-delete">
                 <div className="card-product style-row row-small-2 align-items-center">
                   <div className="card-product-wrapper">
                     <Link
-                      href={`/product-detail/${product.id}`}
+                      href={href}
                       className="product-img"
                     >
                       <Image
                         className="img-product lazyload"
-                        src={product.imgHover}
+                        src={product.imgSrc}
                         alt="image-product"
                         width={500}
                         height={500}
@@ -75,7 +79,7 @@ export default function Cart() {
                   <div className="card-product-info">
                     <div className="box-title">
                       <Link
-                        href={`/product-detail/${product.id}`}
+                        href={href}
                         className="name-product body-md-2 fw-semibold text-secondary link"
                       >
                         {product.title}
@@ -94,7 +98,8 @@ export default function Cart() {
                   />
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
         <div className="popup-footer">

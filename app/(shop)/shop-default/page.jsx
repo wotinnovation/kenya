@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Header5 from "@/components/headers/Header5";
 import Topbar1 from "@/components/headers/Topbar1";
-import Products1 from "@/components/products/Products1";
+import ProductsGrid from "@/components/products/ProductsGrid";
 import RecentProducts from "@/components/common/RecentProducts";
 import Features2 from "@/components/common/Features2";
 import Footer1 from "@/components/footers/Footer1";
@@ -35,7 +35,13 @@ export default function page() {
         </div>
       </div>
 
-      <Products1 />
+      <section className="tf-sp-2">
+        <div className="container">
+          <Suspense fallback={<p className="text-center py-5">Loading products...</p>}>
+            <ProductsGrid />
+          </Suspense>
+        </div>
+      </section>
       <RecentProducts />
       <Features2 />
       <Footer1 />

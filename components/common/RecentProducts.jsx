@@ -1,5 +1,4 @@
 "use client";
-import { products5 } from "@/data/products";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Link from "next/link";
@@ -7,16 +6,28 @@ import Image from "next/image";
 import { Navigation, Pagination } from "swiper/modules";
 import AddToCart from "./AddToCart";
 import AddToWishlist from "./AddToWishlist";
-import AddToQuickview from "./AddToQuickview";
+import RequestQuoteButton from "./RequestQuoteButton";
+import { useProductsListQuery } from "@/graphql/generated";
+import { backendImageUrl } from "@/graphql/imageUrl";
+
 export default function RecentProducts({
   parentClass = "tf-sp-2",
   fullWidth = false,
 }) {
+  const { data, loading } = useProductsListQuery({
+    variables: { limit: 10, status: "publish" },
+  });
+  const products = data?.products?.products ?? [];
+
+  if (loading || !products.length) {
+    return null;
+  }
+
   return (
     <section className={parentClass}>
       <div className={`container${fullWidth ? "-full" : ""}`}>
         <div className="flat-title wow fadeInUp" data-wow-delay="0s">
-          <h5 className="fw-semibold">Recently Viewed</h5>
+          <h5 className="fw-semibold">New Arrivals</h5>
           <div className="box-btn-slide relative">
             <div className="swiper-button-prev nav-swiper nav-prev-products snbp12">
               <i className="icon-arrow-left-lg" />
@@ -53,71 +64,59 @@ export default function RecentProducts({
             nextEl: ".snbn12",
           }}
         >
-          {products5.map((product) => (
+          {products.map((product) => {
+            const price = product.salePrice || product.price;
+            return (
             <SwiperSlide className="swiper-slide" key={product.id}>
-              <div
-                className={`card-product style-img-border ${
-                  product.animation ? "wow " + product.animation : ""
-                }`}
-                data-wow-delay={product.wowDelay || undefined}
-              >
+              <div className="card-product style-img-border">
                 <div className="card-product-wrapper">
                   <Link
-                    href={`/product-detail/${product.id}`}
+                    href={`/product/${product.slug}`}
                     className="product-img">
                     <Image
                       className="img-product lazyload"
-                      src={product.imgHover}
-                      alt="image-product"
-                      width={product.width}
-                      height={product.height}
+                      src={backendImageUrl(product.image)}
+                      alt={product.name}
+                      width={300}
+                      height={300}
                     />
                   </Link>
                   <ul className="list-product-btn">
-                    <li>
-                      <AddToCart
-                        tooltipClass="tooltip-left"
-                        productId={product.id}
-                      />
-                    </li>
                     <li className="d-none d-sm-block wishlist">
-                      <AddToWishlist
-                        tooltipClass="tooltip-left"
-                        productId={product.id}
-                      />
+                      <AddToWishlist tooltipClass="tooltip-left" product={product} />
                     </li>
-                    <li>
-                      <AddToQuickview
-                        productId={product.id}
-                        tooltipClass="tooltip-left"
-                      />
-                    </li>
-                    
                   </ul>
                 </div>
                 <div className="card-product-info">
                   <div className="box-title">
                     <div className="d-flex flex-column">
                       <p className="caption text-main-2 font-2">
-                        {product.category}
+                        {product.categories?.[0]?.name}
                       </p>
                       <Link
-                        href={`/product-detail/${product.id}`}
+                        href={`/product/${product.slug}`}
                         className="name-product body-md-2 fw-semibold text-secondary link"
                       >
-                        {product.title}
+                        {product.name}
                       </Link>
                     </div>
                     <p className="price-wrap fw-medium">
                       <span className="new-price price-text fw-medium">
-                        ${product.price.toFixed(3)}
+                        ${price.toFixed(2)}
                       </span>
                     </p>
+                    <div className="d-flex align-items-center gap-2 mt-2">
+                      {price > 0 && (
+                        <AddToCart tooltipClass="tooltip-left" product={product} />
+                      )}
+                      <RequestQuoteButton tooltipClass="tooltip-left" product={product} />
+                    </div>
                   </div>
                 </div>
               </div>
             </SwiperSlide>
-          ))}
+            );
+          })}
           <div className="d-flex d-lg-none sw-dot-default sw-pagination-products justify-content-center spd12" />
         </Swiper>
       </div>

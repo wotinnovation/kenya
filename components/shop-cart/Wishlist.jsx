@@ -1,9 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useContextElement } from "@/context/Context";
-import { allProducts } from "@/data/products";
 export default function Wishlist() {
   const {
     wishList,
@@ -11,10 +10,7 @@ export default function Wishlist() {
     addProductToCart,
     isAddedToCartProducts,
   } = useContextElement();
-  const [items, setItems] = useState(allProducts);
-  useEffect(() => {
-    setItems([...allProducts.filter((elm) => wishList.includes(elm.id))]);
-  }, [wishList]);
+  const items = wishList;
   return (
     <div className="tf-sp-2">
       <div className="container">
@@ -38,7 +34,11 @@ export default function Wishlist() {
                 </tr>
               </thead>
               <tbody>
-                {items.map((product, i) => (
+                {items.map((product, i) => {
+                  const href = product.slug
+                    ? `/product/${product.slug}`
+                    : `/product-detail/${product.id}`;
+                  return (
                   <tr key={i} className="wishlist-item">
                     <td
                       className="wishlist-item_remove"
@@ -47,7 +47,7 @@ export default function Wishlist() {
                       <i className="icon-close remove link cs-pointer" />
                     </td>
                     <td className="wishlist-item_image">
-                      <Link href={`/product-detail/${product.id}`}>
+                      <Link href={href}>
                         <Image
                           src={product.imgSrc}
                           alt="Image"
@@ -60,7 +60,7 @@ export default function Wishlist() {
                     <td className="wishlist-item_info">
                       <Link
                         className="text-line-clamp-2 body-md-2 fw-semibold text-secondary link"
-                        href={`/product-detail/${product.id}`}
+                        href={href}
                       >
                         {product.title}
                       </Link>
@@ -85,7 +85,7 @@ export default function Wishlist() {
                         href="#shoppingCart"
                         data-bs-toggle="offcanvas"
                         className="tf-btn btn-gray"
-                        onClick={() => addProductToCart(product.id)}
+                        onClick={() => addProductToCart(product)}
                       >
                         <span className="text-white">
                           {isAddedToCartProducts(product.id)
@@ -95,7 +95,8 @@ export default function Wishlist() {
                       </a>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
               <tfoot className="d-none">
                 <tr>

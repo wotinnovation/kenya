@@ -13,8 +13,8 @@ export const useContextElement = () => {
 
 export default function Context({ children }) {
   const [cartProducts, setCartProducts] = useState([]);
-  const [wishList, setWishList] = useState([1, 2, 3]);
-  const [compareItem, setCompareItem] = useState([1, 2, 3, 4]);
+  const [wishList, setWishList] = useState([]);
+  const [compareItem, setCompareItem] = useState([]);
   const [quickViewItem, setQuickViewItem] = useState(allProducts[0]);
   const [quickAddItem, setQuickAddItem] = useState(1);
   const [quoteProduct, setQuoteProduct] = useState(null);
@@ -34,12 +34,16 @@ export default function Context({ children }) {
   };
   const addProductToCart = (productOrId, qty, isModal = true) => {
     const isRealProduct = typeof productOrId === "object" && productOrId !== null;
+    const isNormalizedItem = isRealProduct && "imgSrc" in productOrId;
     const id = isRealProduct ? productOrId.id : productOrId;
     if (!isAddedToCartProducts(id)) {
-      const item = isRealProduct
+      const item = isNormalizedItem
+        ? { ...productOrId, quantity: qty ? qty : 1 }
+        : isRealProduct
         ? {
             id: productOrId.id,
             title: productOrId.name,
+            slug: productOrId.slug,
             imgSrc: backendImageUrl(productOrId.image),
             price: productOrId.salePrice || productOrId.price,
             quantity: qty ? qty : 1,
@@ -67,41 +71,47 @@ export default function Context({ children }) {
     }
   };
 
-  const addToWishlist = (id) => {
-    if (!wishList.includes(id)) {
-      setWishList((pre) => [...pre, id]);
-      //   openWistlistModal();
-    } else {
-      setWishList((pre) => pre.filter((elm) => elm != id));
+  const toListItem = (productOrId) => {
+    const isRealProduct = typeof productOrId === "object" && productOrId !== null;
+    if (!isRealProduct) {
+      return allProducts.find((elm) => elm.id == productOrId) || null;
     }
+    const price = productOrId.salePrice || productOrId.price;
+    return {
+      id: productOrId.id,
+      title: productOrId.name,
+      slug: productOrId.slug,
+      imgSrc: backendImageUrl(productOrId.image),
+      price,
+      oldPrice:
+        productOrId.regularPrice > price ? productOrId.regularPrice : undefined,
+    };
+  };
+
+  const isAddedtoWishlist = (id) => wishList.some((elm) => elm.id == id);
+  const isAddedtoCompareItem = (id) => compareItem.some((elm) => elm.id == id);
+
+  const addToWishlist = (productOrId) => {
+    const id = typeof productOrId === "object" && productOrId !== null ? productOrId.id : productOrId;
+    if (isAddedtoWishlist(id)) {
+      setWishList((pre) => pre.filter((elm) => elm.id != id));
+      return;
+    }
+    const item = toListItem(productOrId);
+    if (item) setWishList((pre) => [...pre, item]);
   };
 
   const removeFromWishlist = (id) => {
-    if (wishList.includes(id)) {
-      setWishList((pre) => [...pre.filter((elm) => elm != id)]);
-    }
+    setWishList((pre) => pre.filter((elm) => elm.id != id));
   };
-  const addToCompareItem = (id) => {
-    if (!compareItem.includes(id)) {
-      setCompareItem((pre) => [...pre, id]);
-    }
+  const addToCompareItem = (productOrId) => {
+    const id = typeof productOrId === "object" && productOrId !== null ? productOrId.id : productOrId;
+    if (isAddedtoCompareItem(id)) return;
+    const item = toListItem(productOrId);
+    if (item) setCompareItem((pre) => [...pre, item]);
   };
   const removeFromCompareItem = (id) => {
-    if (compareItem.includes(id)) {
-      setCompareItem((pre) => [...pre.filter((elm) => elm != id)]);
-    }
-  };
-  const isAddedtoWishlist = (id) => {
-    if (wishList.includes(id)) {
-      return true;
-    }
-    return false;
-  };
-  const isAddedtoCompareItem = (id) => {
-    if (compareItem.includes(id)) {
-      return true;
-    }
-    return false;
+    setCompareItem((pre) => pre.filter((elm) => elm.id != id));
   };
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem("cartList"));

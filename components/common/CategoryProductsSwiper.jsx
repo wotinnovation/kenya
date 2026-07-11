@@ -156,7 +156,7 @@ export default function CategoryProductsSwiper({
                     </Link>
                     <ul className="list-product-btn">
                       <li className="wishlist">
-                        <AddToWishlist tooltipClass="tooltip-left" productId={product.id} />
+                        <AddToWishlist tooltipClass="tooltip-left" product={product} />
                       </li>
                     </ul>
                   </div>

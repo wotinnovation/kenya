@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { useContextElement } from "@/context/Context";
-import { allProducts } from "@/data/products";
 export default function Compare() {
   const {
     removeFromCompareItem,
@@ -11,12 +10,7 @@ export default function Compare() {
     addProductToCart,
     isAddedToCartProducts,
   } = useContextElement();
-  const [items, setItems] = useState([]);
-  useEffect(() => {
-    setItems([
-      ...allProducts.filter((product) => compareItem.includes(product.id)),
-    ]);
-  }, [compareItem]);
+  const items = compareItem;
 
   return (
     <div className="tf-sp-2">
@@ -114,7 +108,7 @@ export default function Compare() {
                       href="#shoppingCart"
                       data-bs-toggle="offcanvas"
                       className="tf-btn btn-gray text-nowrap"
-                      onClick={() => addProductToCart(product.id)}
+                      onClick={() => addProductToCart(product)}
                     >
                       <span className="text-white">
                         {isAddedToCartProducts(product.id)

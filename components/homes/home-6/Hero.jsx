@@ -134,7 +134,7 @@ export default function Hero() {
                           </li>
                         )}
                         <li className="wishlist">
-                          <AddToWishlist productId={product.id} />
+                          <AddToWishlist product={product} />
                         </li>
                         <li>
                           <RequestQuoteButton product={product} />
