@@ -4,9 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import Link from "next/link";
 import Image from "next/image";
 import { Navigation, Pagination } from "swiper/modules";
-import AddToCart from "@/components/common/AddToCart";
-import AddToWishlist from "@/components/common/AddToWishlist";
-import RequestQuoteButton from "@/components/common/RequestQuoteButton";
+import { useContextElement } from "@/context/Context";
 import ProductCardShimmer from "@/components/productCards/ProductCardShimmer";
 import { useCategoryBySlugQuery, useProductsListQuery } from "@/graphql/generated";
 import { backendImageUrl } from "@/graphql/imageUrl";
@@ -45,6 +43,9 @@ export default function CategoryProductsSwiper({
   const prevClass = `nav-prev-${categorySlug}`;
   const nextClass = `nav-next-${categorySlug}`;
   const dotsClass = `dots-${categorySlug}`;
+
+  const { addProductToCart, isAddedToCartProducts, setQuoteProduct } = useContextElement();
+  const hasPrice = (p) => typeof p === "number" && p > 0;
 
   if (loading) {
     return (
@@ -144,9 +145,9 @@ export default function CategoryProductsSwiper({
             const price = product.salePrice || product.price;
             return (
               <SwiperSlide key={product.id} className="swiper-slide">
-                <div className="card-product">
+                <div className="card-product style-border d-flex flex-column">
                   <div className="card-product-wrapper">
-                    <Link href={`/product/${product.slug}`} className="product-img">
+                    <Link href={`/product/${product.slug}`} className="product-img d-block">
                       <Image
                         className="img-product lazyload"
                         src={backendImageUrl(product.image)}
@@ -155,39 +156,50 @@ export default function CategoryProductsSwiper({
                         height={300}
                       />
                     </Link>
-                    <ul className="list-product-btn">
-                      <li className="wishlist">
-                        <AddToWishlist tooltipClass="tooltip-left" product={product} />
-                      </li>
-                    </ul>
                   </div>
-                  <div className="card-product-info">
-                    <div className="box-title">
-                      <div className="d-flex flex-column">
-                        <Link
-                          href={`/product/${product.slug}`}
-                          className="name-product body-md-2 fw-semibold text-secondary link"
-                        >
-                          {product.name}
-                        </Link>
-                      </div>
-                      <p className="price-wrap fw-medium">
-                        <span className="new-price price-text fw-medium mb-0">
-                          {formatPrice(price)}
-                        </span>
-                        {product.salePrice > 0 &&
-                          product.regularPrice > product.salePrice && (
-                            <span className="old-price body-md-2 text-main-2 fw-normal">
+                  <div className="card-product-info d-flex flex-column flex-grow-1">
+                    <div className="box-title flex-grow-1">
+                      <Link
+                        href={`/product/${product.slug}`}
+                        className="name-product body-md-2 fw-semibold text-secondary link"
+                      >
+                        {product.name}
+                      </Link>
+                      {hasPrice(price) && (
+                        <p className="price-wrap fw-medium mt-1">
+                          <span className="new-price price-text fw-medium mb-0">
+                            {formatPrice(price)}
+                          </span>
+                          {product.salePrice > 0 && product.regularPrice > product.salePrice && (
+                            <span className="old-price body-md-2 text-main-2 fw-normal ms-2">
                               ${product.regularPrice.toFixed(2)}
                             </span>
                           )}
-                      </p>
-                      <div className="d-flex align-items-center gap-2 mt-2">
-                        {price > 0 && (
-                          <AddToCart tooltipClass="tooltip-left" product={product} />
-                        )}
-                        <RequestQuoteButton tooltipClass="tooltip-left" product={product} />
-                      </div>
+                        </p>
+                      )}
+                    </div>
+                    <div className="mt-2">
+                      {hasPrice(price) ? (
+                        <a
+                          href="#shoppingCart"
+                          data-bs-toggle="offcanvas"
+                          onClick={() => addProductToCart(product)}
+                          className="tf-btn btn-fill w-100 justify-content-center"
+                        >
+                          <span className="caption text-white">
+                            {isAddedToCartProducts(product.id) ? "Added to Cart" : "Add to Cart"}
+                          </span>
+                        </a>
+                      ) : (
+                        <a
+                          href="#requestQuote"
+                          data-bs-toggle="modal"
+                          onClick={() => setQuoteProduct(product)}
+                          className="tf-btn btn-outline w-100 justify-content-center"
+                        >
+                          <span className="caption">Get a Quote</span>
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
