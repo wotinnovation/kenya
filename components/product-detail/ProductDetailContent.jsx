@@ -223,11 +223,14 @@ export default function ProductDetailContent({ slug }) {
                 </div>
 
                 {/* Key features / short description */}
-                {product.keyFeatures?.length > 0 && (
+                {product.keyFeatures && (
                   <div className="mb-3">
                     <h6 className="fw-semibold mb-2">About this item</h6>
                     <ul className="mb-0" style={{ paddingLeft: "1.2rem" }}>
-                      {product.keyFeatures.map((f, i) => (
+                      {(Array.isArray(product.keyFeatures)
+                        ? product.keyFeatures
+                        : String(product.keyFeatures).split(/\n|•/).map((s) => s.trim()).filter(Boolean)
+                      ).map((f, i) => (
                         <li key={i} className="body-text-3 mb-1">{f}</li>
                       ))}
                     </ul>
