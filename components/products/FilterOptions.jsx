@@ -1,7 +1,7 @@
 import { brands } from "@/data/filterOptions";
 import React, { useState } from "react";
 
-export default function FilterOptions({ allProps }) {
+export default function FilterOptions({ allProps, categories }) {
   const [priceRange, setPriceRange] = useState([null, null]); // [min, max]
 
   const handleInputChange = (e, index) => {
@@ -27,42 +27,20 @@ export default function FilterOptions({ allProps }) {
 
   return (
     <>
-      <div className="facet-categories">
-        <h6 className="title fw-medium">Show all categories</h6>
-        <ul>
-          <li>
-            <a href="#">
-              Consumer Electronics <i className="icon-arrow-right" />
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              Home products <i className="icon-arrow-right" />
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              Tool &amp; hardware <i className="icon-arrow-right" />
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              Computers &amp; Accessories
-              <i className="icon-arrow-right" />
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              Gaming accessories <i className="icon-arrow-right" />
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              Electronics <i className="icon-arrow-right" />
-            </a>
-          </li>
-        </ul>
-      </div>
+      {categories && categories.length > 0 && (
+        <div className="facet-categories">
+          <h6 className="title fw-medium">All categories</h6>
+          <ul>
+            {categories.map((cat) => (
+              <li key={cat.id || cat.slug}>
+                <a href={`/products/${cat.slug}`}>
+                  {cat.name} <i className="icon-arrow-right" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="widget-facet facet-fieldset has-loadmore">
         <p className="facet-title title-sidebar fw-semibold">Brand</p>
         <div className="box-fieldset-item">

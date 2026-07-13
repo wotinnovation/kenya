@@ -6,7 +6,7 @@ import Header5 from "@/components/headers/Header5";
 import Topbar1 from "@/components/headers/Topbar1";
 import Footer1 from "@/components/footers/Footer1";
 import ProductsGrid from "@/components/products/ProductsGrid";
-import { useCategoryBySlugQuery } from "@/graphql/generated";
+import { useCategoryBySlugQuery, useTopLevelCategoriesQuery } from "@/graphql/generated";
 import NetworkCategorySidebar, {
   isNetworkCategory,
 } from "@/components/products/NetworkCategorySidebar";
@@ -16,6 +16,9 @@ import { useCategoryFilter } from "@/hooks/useCategoryFilter";
 
 export default function CategoryProductsPageClient() {
   const { category: categorySlug } = useParams();
+  const { data: allCatsData } = useTopLevelCategoriesQuery();
+  const allCategories = allCatsData?.categories ?? [];
+
   const { data, loading } = useCategoryBySlugQuery({
     variables: { slug: categorySlug },
   });
@@ -97,7 +100,7 @@ export default function CategoryProductsPageClient() {
                     <h6 className="fw-semibold mb-3 pb-2 border-bottom">
                       Filters
                     </h6>
-                    <FilterOptions allProps={filterProps} />
+                    <FilterOptions allProps={filterProps} categories={allCategories} />
                     <button
                       onClick={filterProps.clearFilter}
                       className="tf-btn btn-reset w-100 mt-3"
@@ -189,7 +192,7 @@ export default function CategoryProductsPageClient() {
             />
           </div>
           <div className="canvas-body">
-            <FilterOptions allProps={filterProps} />
+            <FilterOptions allProps={filterProps} categories={allCategories} />
           </div>
           <div className="canvas-bottom">
             <button
