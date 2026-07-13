@@ -36,15 +36,7 @@
     &:hover {
       .product-img {
         .img-product {
-          opacity: 0;
-        }
-
-        .img-hover {
-          display: block;
-          z-index: 1;
           opacity: 1;
-          -webkit-transform: scale(1.05);
-          transform: scale(1.05);
         }
       }
     }
