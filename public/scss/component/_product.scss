@@ -1,10 +1,21 @@
 @use "../abstracts/mixin";
 @use "../abstracts/variable";
 
+.tf-sw-products {
+  .swiper-wrapper {
+    align-items: stretch;
+  }
+  .swiper-slide {
+    height: auto;
+    display: flex;
+  }
+}
+
 .card-product {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: 100%;
 
   .card-product-wrapper {
     aspect-ratio: calc(274 / 274);
