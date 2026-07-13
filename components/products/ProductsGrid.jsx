@@ -1,10 +1,11 @@
 "use client";
+import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useProductsListQuery } from "@/graphql/generated";
 import RealProductCard from "@/components/productCards/RealProductCard";
 import ProductCardShimmer from "@/components/productCards/ProductCardShimmer";
 
-const PAGE_SIZE = 18;
+const DEFAULT_PAGE_SIZE = 18;
 const MAX_VISIBLE_PAGES = 10;
 
 function getVisiblePages(current, total) {
@@ -20,20 +21,39 @@ function getVisiblePages(current, total) {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 }
 
-function applyFilters(products, filterCriteria) {
-  if (!filterCriteria) return products;
-  const { price } = filterCriteria;
+function applyFiltersAndSort(products, filterCriteria, sortOption) {
   let result = products;
-  if (price && price[1] < 999999) {
+
+  if (filterCriteria?.price && filterCriteria.price[1] < 999999) {
     result = result.filter((p) => {
       const effectivePrice = p.salePrice || p.price || 0;
-      return effectivePrice >= price[0] && effectivePrice <= price[1];
+      return effectivePrice >= filterCriteria.price[0] && effectivePrice <= filterCriteria.price[1];
     });
   }
+
+  if (sortOption && sortOption !== "Default") {
+    result = [...result];
+    if (sortOption === "Price: Low to High") {
+      result.sort((a, b) => (a.salePrice || a.price || 0) - (b.salePrice || b.price || 0));
+    } else if (sortOption === "Price: High to Low") {
+      result.sort((a, b) => (b.salePrice || b.price || 0) - (a.salePrice || a.price || 0));
+    } else if (sortOption === "Name: A-Z") {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortOption === "Name: Z-A") {
+      result.sort((a, b) => b.name.localeCompare(a.name));
+    }
+  }
+
   return result;
 }
 
-export default function ProductsGrid({ categorySlug, filterCriteria }) {
+export default function ProductsGrid({
+  categorySlug,
+  filterCriteria,
+  pageSize = DEFAULT_PAGE_SIZE,
+  sortOption = "Default",
+  onDataLoad,
+}) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const page = Number(searchParams.get("page")) || 1;
@@ -44,16 +64,23 @@ export default function ProductsGrid({ categorySlug, filterCriteria }) {
     variables: {
       category: isGaming ? undefined : categorySlug,
       page,
-      limit: PAGE_SIZE,
+      limit: pageSize,
       search: isGaming ? (search ? `${search} Gaming` : "Gaming") : search,
       status: "publish",
     },
   });
 
   const rawProducts = data?.products?.products ?? [];
-  const products = applyFilters(rawProducts, filterCriteria);
+  const products = applyFiltersAndSort(rawProducts, filterCriteria, sortOption);
   const totalPages = data?.products?.pages ?? 1;
+  const total = data?.products?.total ?? 0;
   const isFiltered = Boolean(filterCriteria && filterCriteria.price[1] < 999999);
+
+  useEffect(() => {
+    if (data && onDataLoad) {
+      onDataLoad({ total, page, pageSize });
+    }
+  }, [data, total, page, pageSize]);
 
   const goToPage = (targetPage) => {
     if (targetPage < 1 || targetPage > totalPages || targetPage === page) return;
@@ -66,7 +93,7 @@ export default function ProductsGrid({ categorySlug, filterCriteria }) {
   if (loading) {
     return (
       <div className="tf-grid-layout xxl-col-5 lg-col-4 md-col-3 sm-col-2 flat-grid-product wrapper-shop layout-tabgrid-1">
-        {Array.from({ length: PAGE_SIZE }, (_, i) => (
+        {Array.from({ length: pageSize }, (_, i) => (
           <ProductCardShimmer key={i} />
         ))}
       </div>
@@ -74,11 +101,7 @@ export default function ProductsGrid({ categorySlug, filterCriteria }) {
   }
 
   if (error) {
-    return (
-      <p className="text-center py-5 text-danger">
-        Could not load products. Please try again.
-      </p>
-    );
+    return <p className="text-center py-5 text-danger">Could not load products. Please try again.</p>;
   }
 
   if (!products.length) {
@@ -95,67 +118,39 @@ export default function ProductsGrid({ categorySlug, filterCriteria }) {
 
   return (
     <>
-      <div className="tf-grid-layout xxl-col-5 lg-col-4 md-col-3 sm-col-2 flat-grid-product wrapper-shop layout-tabgrid-1">
-        {products.map((product) => (
-          <RealProductCard key={product.id} product={product} />
-        ))}
+      <div className="gridLayout-wrapper">
+        <div className="tf-grid-layout xxl-col-5 lg-col-4 md-col-3 sm-col-2 flat-grid-product wrapper-shop layout-tabgrid-1" id="gridLayout">
+          {products.map((product) => (
+            <RealProductCard key={product.id} product={product} />
+          ))}
+        </div>
       </div>
       {!isFiltered && totalPages > 1 && (
         <ul className="wg-pagination justify-content-center mt-5">
           <li className={page === 1 ? "disabled" : ""}>
-            <button
-              type="button"
-              onClick={() => goToPage(page - 1)}
-              disabled={page === 1}
-              style={{ background: "none", border: "none" }}
-              aria-label="Previous page"
-            >
+            <button type="button" onClick={() => goToPage(page - 1)} disabled={page === 1} style={{ background: "none", border: "none" }} aria-label="Previous page">
               <i className="icon icon-arrow-left-lg" />
             </button>
           </li>
           {visiblePages[0] > 1 && (
             <>
-              <li>
-                <button type="button" onClick={() => goToPage(1)} style={{ background: "none", border: "none" }}>
-                  1
-                </button>
-              </li>
+              <li><button type="button" onClick={() => goToPage(1)} style={{ background: "none", border: "none" }}>1</button></li>
               {visiblePages[0] > 2 && <li>...</li>}
             </>
           )}
           {visiblePages.map((p) => (
             <li key={p} className={p === page ? "active" : ""}>
-              <button
-                type="button"
-                onClick={() => goToPage(p)}
-                style={{ background: "none", border: "none" }}
-              >
-                {p}
-              </button>
+              <button type="button" onClick={() => goToPage(p)} style={{ background: "none", border: "none" }}>{p}</button>
             </li>
           ))}
           {visiblePages[visiblePages.length - 1] < totalPages && (
             <>
               {visiblePages[visiblePages.length - 1] < totalPages - 1 && <li>...</li>}
-              <li>
-                <button
-                  type="button"
-                  onClick={() => goToPage(totalPages)}
-                  style={{ background: "none", border: "none" }}
-                >
-                  {totalPages}
-                </button>
-              </li>
+              <li><button type="button" onClick={() => goToPage(totalPages)} style={{ background: "none", border: "none" }}>{totalPages}</button></li>
             </>
           )}
           <li className={page === totalPages ? "disabled" : ""}>
-            <button
-              type="button"
-              onClick={() => goToPage(page + 1)}
-              disabled={page === totalPages}
-              style={{ background: "none", border: "none" }}
-              aria-label="Next page"
-            >
+            <button type="button" onClick={() => goToPage(page + 1)} disabled={page === totalPages} style={{ background: "none", border: "none" }} aria-label="Next page">
               <i className="icon icon-arrow-right-lg" />
             </button>
           </li>

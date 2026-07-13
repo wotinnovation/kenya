@@ -1,10 +1,11 @@
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useState, useCallback } from "react";
 import Link from "next/link";
 import Header5 from "@/components/headers/Header5";
 import Topbar1 from "@/components/headers/Topbar1";
 import Footer1 from "@/components/footers/Footer1";
 import ProductsGrid from "@/components/products/ProductsGrid";
+import ProductsToolbar from "@/components/products/ProductsToolbar";
 import FilterOptions from "@/components/products/FilterOptions";
 import { useCategoryFilter } from "@/hooks/useCategoryFilter";
 import { useTopLevelCategoriesQuery } from "@/graphql/generated";
@@ -13,6 +14,15 @@ export default function ProductsPage() {
   const { filterProps, filterCriteria } = useCategoryFilter();
   const { data: allCatsData } = useTopLevelCategoriesQuery();
   const allCategories = allCatsData?.categories ?? [];
+
+  const [pageSize, setPageSize] = useState(18);
+  const [sortOption, setSortOption] = useState("Default");
+  const [gridTotal, setGridTotal] = useState(0);
+  const [gridPage, setGridPage] = useState(1);
+  const handleDataLoad = useCallback(({ total, page }) => {
+    setGridTotal(total);
+    setGridPage(page);
+  }, []);
 
   return (
     <>
@@ -70,8 +80,21 @@ export default function ProductsPage() {
                 <h5 className="fw-semibold">All Products</h5>
               </div>
 
+              <ProductsToolbar
+                total={gridTotal}
+                page={gridPage}
+                pageSize={pageSize}
+                onPageSizeChange={setPageSize}
+                sortOption={sortOption}
+                onSortChange={setSortOption}
+              />
               <Suspense fallback={<p className="text-center py-5">Loading products...</p>}>
-                <ProductsGrid filterCriteria={filterCriteria} />
+                <ProductsGrid
+                  filterCriteria={filterCriteria}
+                  pageSize={pageSize}
+                  sortOption={sortOption}
+                  onDataLoad={handleDataLoad}
+                />
               </Suspense>
             </div>
           </div>

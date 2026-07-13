@@ -1,11 +1,12 @@
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Header5 from "@/components/headers/Header5";
 import Topbar1 from "@/components/headers/Topbar1";
 import Footer1 from "@/components/footers/Footer1";
 import ProductsGrid from "@/components/products/ProductsGrid";
+import ProductsToolbar from "@/components/products/ProductsToolbar";
 import { useCategoryBySlugQuery, useTopLevelCategoriesQuery } from "@/graphql/generated";
 import NetworkCategorySidebar, {
   isNetworkCategory,
@@ -18,6 +19,15 @@ export default function CategoryProductsPageClient() {
   const { category: categorySlug } = useParams();
   const { data: allCatsData } = useTopLevelCategoriesQuery();
   const allCategories = allCatsData?.categories ?? [];
+
+  const [pageSize, setPageSize] = useState(18);
+  const [sortOption, setSortOption] = useState("Default");
+  const [gridTotal, setGridTotal] = useState(0);
+  const [gridPage, setGridPage] = useState(1);
+  const handleDataLoad = useCallback(({ total, page }) => {
+    setGridTotal(total);
+    setGridPage(page);
+  }, []);
 
   const { data, loading } = useCategoryBySlugQuery({
     variables: { slug: categorySlug },
@@ -160,6 +170,14 @@ export default function CategoryProductsPageClient() {
                   </ul>
                 )}
 
+                <ProductsToolbar
+                  total={gridTotal}
+                  page={gridPage}
+                  pageSize={pageSize}
+                  onPageSizeChange={setPageSize}
+                  sortOption={sortOption}
+                  onSortChange={setSortOption}
+                />
                 <Suspense
                   fallback={
                     <p className="text-center py-5">Loading products...</p>
@@ -168,6 +186,9 @@ export default function CategoryProductsPageClient() {
                   <ProductsGrid
                     categorySlug={categorySlug}
                     filterCriteria={filterCriteria}
+                    pageSize={pageSize}
+                    sortOption={sortOption}
+                    onDataLoad={handleDataLoad}
                   />
                 </Suspense>
               </div>
