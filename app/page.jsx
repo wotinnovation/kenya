@@ -8,6 +8,7 @@ import CategoryProductsSwiper from "@/components/common/CategoryProductsSwiper";
 import BrandsSlider from "@/components/common/BrandsSlider";
 import Footer1 from "@/components/footers/Footer1";
 import Features2 from "@/components/common/Features2";
+import CategorySitemap from "@/components/common/CategorySitemap";
 
 export const metadata = {
   title: "Home || Kenya eCommerce",
@@ -30,6 +31,7 @@ export default function Home() {
       <CategoryProductsSwiper categorySlug="gaming-pc-and-case" />
       <CategoryProductsSwiper categorySlug="computers-and-laptops" />
       <CategoryProductsSwiper categorySlug="security-devices" />
+      <CategorySitemap />
       <Features2 />
       <Footer1 />
     </>

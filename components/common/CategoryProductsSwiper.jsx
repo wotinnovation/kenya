@@ -207,9 +207,9 @@ export default function CategoryProductsSwiper({
                           href="#shoppingCart"
                           data-bs-toggle="offcanvas"
                           onClick={() => addProductToCart(product)}
-                          className="tf-btn btn-fill w-100 justify-content-center"
+                          className="card-product-cta-btn"
                         >
-                          <span className="caption text-white">
+                          <span className="caption">
                             {isAddedToCartProducts(product.id) ? "Added to Cart" : "Add to Cart"}
                           </span>
                         </a>
@@ -218,7 +218,7 @@ export default function CategoryProductsSwiper({
                           href="#requestQuote"
                           data-bs-toggle="modal"
                           onClick={() => setQuoteProduct(product)}
-                          className="tf-btn btn-outline w-100 justify-content-center"
+                          className="card-product-cta-btn"
                         >
                           <span className="caption">Get a Quote</span>
                         </a>

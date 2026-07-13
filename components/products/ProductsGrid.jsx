@@ -92,7 +92,7 @@ export default function ProductsGrid({
 
   if (loading) {
     return (
-      <div className="tf-grid-layout xxl-col-5 lg-col-4 md-col-3 sm-col-2 flat-grid-product wrapper-shop layout-tabgrid-1">
+      <div className="tf-grid-layout xxl-col-4 lg-col-3 md-col-2 sm-col-2 flat-grid-product wrapper-shop layout-tabgrid-1">
         {Array.from({ length: pageSize }, (_, i) => (
           <ProductCardShimmer key={i} />
         ))}
@@ -119,7 +119,7 @@ export default function ProductsGrid({
   return (
     <>
       <div className="gridLayout-wrapper">
-        <div className="tf-grid-layout xxl-col-5 lg-col-4 md-col-3 sm-col-2 flat-grid-product wrapper-shop layout-tabgrid-1" id="gridLayout">
+        <div className="tf-grid-layout xxl-col-4 lg-col-3 md-col-2 sm-col-2 flat-grid-product wrapper-shop layout-tabgrid-1" id="gridLayout">
           {products.map((product) => (
             <RealProductCard key={product.id} product={product} />
           ))}

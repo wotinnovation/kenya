@@ -16,6 +16,34 @@ export const PRODUCT_CARD_FIELDS = gql`
       name
       slug
     }
+    sku
+    model
+    gallery
+    shortDescription
+    specifications {
+      name
+      value
+    }
+    brand {
+      id
+      name
+      slug
+    }
+    attributes {
+      name
+      options
+      variation
+    }
+    variations {
+      image
+      price
+      salePrice
+      regularPrice
+      attributes {
+        name
+        option
+      }
+    }
   }
 `;
 

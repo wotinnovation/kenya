@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import AddToCart from "@/components/common/AddToCart";
 import AddToWishlist from "@/components/common/AddToWishlist";
-import RequestQuoteButton from "@/components/common/RequestQuoteButton";
 import { useProductsListLazyQuery } from "@/graphql/generated";
 import { backendImageUrl } from "@/graphql/imageUrl";
+import { useContextElement } from "@/context/Context";
+import { formatPrice } from "@/utlis/price";
 
 const POPULATED_CATEGORIES = [
   "it-accessories",
@@ -27,6 +27,7 @@ function shuffle(arr) {
 export default function Hero() {
   const [heroProducts, setHeroProducts] = useState([]);
   const [fetchProducts] = useProductsListLazyQuery();
+  const { addProductToCart, isAddedToCartProducts, setQuoteProduct } = useContextElement();
 
   useEffect(() => {
     let cancelled = false;
@@ -122,24 +123,39 @@ export default function Hero() {
                       </Link>
                     </div>
                     <div className="group-btn">
-                      <p className="price-wrap fw-medium">
-                        <span className="new-price price-text fw-medium">
-                          ${price.toFixed(2)}
-                        </span>
-                      </p>
-                      <ul className="list-product-btn flex-row">
-                        {price > 0 && (
-                          <li>
-                            <AddToCart product={product} />
-                          </li>
+                      {price > 0 && (
+                        <p className="price-wrap fw-medium mb-1">
+                          <span className="new-price price-text fw-medium">
+                            {formatPrice(price)}
+                          </span>
+                        </p>
+                      )}
+                      <div className="d-flex align-items-center gap-2 mt-1">
+                        {price > 0 ? (
+                          <a
+                            href="#shoppingCart"
+                            data-bs-toggle="offcanvas"
+                            onClick={() => addProductToCart(product)}
+                            className="tf-btn btn-fill btn-sm justify-content-center"
+                            style={{ fontSize: 11, padding: "4px 10px" }}
+                          >
+                            <span className="text-white" style={{ fontSize: 11 }}>
+                              {isAddedToCartProducts(product.id) ? "Added" : "Add to Cart"}
+                            </span>
+                          </a>
+                        ) : (
+                          <a
+                            href="#requestQuote"
+                            data-bs-toggle="modal"
+                            onClick={() => setQuoteProduct(product)}
+                            className="tf-btn btn-outline btn-sm justify-content-center"
+                            style={{ fontSize: 11, padding: "4px 10px" }}
+                          >
+                            <span style={{ fontSize: 11 }}>Get a Quote</span>
+                          </a>
                         )}
-                        <li className="wishlist">
-                          <AddToWishlist product={product} />
-                        </li>
-                        <li>
-                          <RequestQuoteButton product={product} />
-                        </li>
-                      </ul>
+                        <AddToWishlist product={product} />
+                      </div>
                     </div>
                   </div>
                 </div>
