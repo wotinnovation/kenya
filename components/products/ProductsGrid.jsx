@@ -20,7 +20,20 @@ function getVisiblePages(current, total) {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 }
 
-export default function ProductsGrid({ categorySlug }) {
+function applyFilters(products, filterCriteria) {
+  if (!filterCriteria) return products;
+  const { price } = filterCriteria;
+  let result = products;
+  if (price && price[1] < 999999) {
+    result = result.filter((p) => {
+      const effectivePrice = p.salePrice || p.price || 0;
+      return effectivePrice >= price[0] && effectivePrice <= price[1];
+    });
+  }
+  return result;
+}
+
+export default function ProductsGrid({ categorySlug, filterCriteria }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const page = Number(searchParams.get("page")) || 1;
@@ -37,7 +50,8 @@ export default function ProductsGrid({ categorySlug }) {
     },
   });
 
-  const products = data?.products?.products ?? [];
+  const rawProducts = data?.products?.products ?? [];
+  const products = applyFilters(rawProducts, filterCriteria);
   const totalPages = data?.products?.pages ?? 1;
 
   const goToPage = (targetPage) => {
