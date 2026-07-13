@@ -53,6 +53,7 @@ export default function ProductsGrid({ categorySlug, filterCriteria }) {
   const rawProducts = data?.products?.products ?? [];
   const products = applyFilters(rawProducts, filterCriteria);
   const totalPages = data?.products?.pages ?? 1;
+  const isFiltered = Boolean(filterCriteria && filterCriteria.price[1] < 999999);
 
   const goToPage = (targetPage) => {
     if (targetPage < 1 || targetPage > totalPages || targetPage === page) return;
@@ -81,7 +82,13 @@ export default function ProductsGrid({ categorySlug, filterCriteria }) {
   }
 
   if (!products.length) {
-    return <p className="text-center py-5">No products found.</p>;
+    return (
+      <p className="text-center py-5">
+        {isFiltered
+          ? "No products match this price range on this page. Try adjusting the filter or go to a different page."
+          : "No products found."}
+      </p>
+    );
   }
 
   const visiblePages = getVisiblePages(page, totalPages);
@@ -93,7 +100,7 @@ export default function ProductsGrid({ categorySlug, filterCriteria }) {
           <RealProductCard key={product.id} product={product} />
         ))}
       </div>
-      {totalPages > 1 && (
+      {!isFiltered && totalPages > 1 && (
         <ul className="wg-pagination justify-content-center mt-5">
           <li className={page === 1 ? "disabled" : ""}>
             <button
@@ -153,6 +160,11 @@ export default function ProductsGrid({ categorySlug, filterCriteria }) {
             </button>
           </li>
         </ul>
+      )}
+      {isFiltered && (
+        <p className="text-center text-muted body-text-3 mt-4">
+          Price filter applied — showing results from current page only.
+        </p>
       )}
     </>
   );
