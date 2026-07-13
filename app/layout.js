@@ -13,6 +13,7 @@ import Register from "@/components/modals/Register";
 import RequestQuote from "@/components/modals/RequestQuote";
 import ScrollTop from "@/components/common/ScrollTop";
 import Quickview from "@/components/modals/Quickview";
+import RealProductQuickview from "@/components/modals/RealProductQuickview";
 import MobileMenu from "@/components/modals/MobileMenu";
 import Toolbar from "@/components/modals/Toolbar";
 import Search from "@/components/modals/Search";
@@ -141,6 +142,7 @@ export default function RootLayout({ children }) {
                 <RequestQuote />
                 <Cart />
                 <Quickview />
+                <RealProductQuickview />
                 <MobileMenu />
                 <ScrollTop />
                 <Toolbar />

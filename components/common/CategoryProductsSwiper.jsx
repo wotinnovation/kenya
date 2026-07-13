@@ -44,7 +44,7 @@ export default function CategoryProductsSwiper({
   const nextClass = `nav-next-${categorySlug}`;
   const dotsClass = `dots-${categorySlug}`;
 
-  const { addProductToCart, isAddedToCartProducts, setQuoteProduct } = useContextElement();
+  const { addProductToCart, isAddedToCartProducts, setQuoteProduct, setQuickviewProduct, addToWishlist, isAddedtoWishlist } = useContextElement();
   const hasPrice = (p) => typeof p === "number" && p > 0;
 
   if (loading) {
@@ -156,6 +156,29 @@ export default function CategoryProductsSwiper({
                         height={300}
                       />
                     </Link>
+                    <ul className="list-product-btn">
+                      <li>
+                        <a
+                          href="#realProductQuickview"
+                          data-bs-toggle="modal"
+                          onClick={() => setQuickviewProduct(product)}
+                          className="box-icon quickview btn-icon-action hover-tooltip tooltip-left"
+                        >
+                          <span className="icon icon-view" />
+                          <span className="tooltip">Quick View</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          onClick={(e) => { e.preventDefault(); addToWishlist(product); }}
+                          className="box-icon wishlist btn-icon-action hover-tooltip tooltip-left"
+                        >
+                          <span className={`icon ${isAddedtoWishlist(product.id) ? "icon-trash" : "icon-heart2"}`} />
+                          <span className="tooltip">{isAddedtoWishlist(product.id) ? "Remove" : "Wishlist"}</span>
+                        </a>
+                      </li>
+                    </ul>
                   </div>
                   <div className="card-product-info d-flex flex-column flex-grow-1">
                     <div className="box-title flex-grow-1">

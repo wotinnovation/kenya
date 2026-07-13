@@ -6,7 +6,7 @@ import { backendImageUrl } from "@/graphql/imageUrl";
 import { formatPrice } from "@/utlis/price";
 
 export default function RealProductCard({ product }) {
-  const { addProductToCart, isAddedToCartProducts, setQuoteProduct } =
+  const { addProductToCart, isAddedToCartProducts, setQuoteProduct, setQuickviewProduct, addToWishlist, isAddedtoWishlist } =
     useContextElement();
 
   const price = product.salePrice || product.price;
@@ -29,6 +29,29 @@ export default function RealProductCard({ product }) {
             height={300}
           />
         </Link>
+        <ul className="list-product-btn">
+          <li>
+            <a
+              href="#realProductQuickview"
+              data-bs-toggle="modal"
+              onClick={() => setQuickviewProduct(product)}
+              className="box-icon quickview btn-icon-action hover-tooltip tooltip-left"
+            >
+              <span className="icon icon-view" />
+              <span className="tooltip">Quick View</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); addToWishlist(product); }}
+              className="box-icon wishlist btn-icon-action hover-tooltip tooltip-left"
+            >
+              <span className={`icon ${isAddedtoWishlist(product.id) ? "icon-trash" : "icon-heart2"}`} />
+              <span className="tooltip">{isAddedtoWishlist(product.id) ? "Remove" : "Wishlist"}</span>
+            </a>
+          </li>
+        </ul>
       </div>
       <div className="card-product-info d-flex flex-column flex-grow-1">
         <div className="box-title gap-xl-12 flex-grow-1">

@@ -1,6 +1,16 @@
 @use "../abstracts/mixin";
 @use "../abstracts/variable";
 
+.card-product-wrapper {
+  .list-product-btn {
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+  &:hover .list-product-btn {
+    opacity: 1;
+  }
+}
+
 .tf-sw-products {
   .swiper-wrapper {
     align-items: stretch;

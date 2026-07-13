@@ -18,6 +18,7 @@ export default function Context({ children }) {
   const [quickViewItem, setQuickViewItem] = useState(allProducts[0]);
   const [quickAddItem, setQuickAddItem] = useState(1);
   const [quoteProduct, setQuoteProduct] = useState(null);
+  const [quickviewProduct, setQuickviewProduct] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   useEffect(() => {
     const subtotal = cartProducts.reduce((accumulator, product) => {
@@ -150,6 +151,8 @@ export default function Context({ children }) {
     setQuickAddItem,
     quoteProduct,
     setQuoteProduct,
+    quickviewProduct,
+    setQuickviewProduct,
     addToCompareItem,
     isAddedtoCompareItem,
     removeFromCompareItem,
