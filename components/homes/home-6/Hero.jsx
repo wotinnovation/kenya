@@ -136,10 +136,10 @@ export default function Hero() {
                             href="#shoppingCart"
                             data-bs-toggle="offcanvas"
                             onClick={() => addProductToCart(product)}
-                            className="tf-btn btn-fill btn-sm justify-content-center"
+                            className="card-product-cta-btn"
                             style={{ fontSize: 11, padding: "4px 10px" }}
                           >
-                            <span className="text-white" style={{ fontSize: 11 }}>
+                            <span className="caption">
                               {isAddedToCartProducts(product.id) ? "Added" : "Add to Cart"}
                             </span>
                           </a>
@@ -148,10 +148,10 @@ export default function Hero() {
                             href="#requestQuote"
                             data-bs-toggle="modal"
                             onClick={() => setQuoteProduct(product)}
-                            className="tf-btn btn-outline btn-sm justify-content-center"
+                            className="card-product-cta-btn"
                             style={{ fontSize: 11, padding: "4px 10px" }}
                           >
-                            <span style={{ fontSize: 11 }}>Get a Quote</span>
+                            <span className="caption">Get a Quote</span>
                           </a>
                         )}
                         <AddToWishlist product={product} />
