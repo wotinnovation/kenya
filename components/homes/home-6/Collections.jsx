@@ -39,7 +39,7 @@ export default function Collections({ parentClass = "tf-sp-2 pt-0" }) {
                 data-wow-delay={item.wowDelay}
               >
                 <Link
-                  href={`/shop-default`}
+                  href={`/products/${item.slug || ''}`}
                   className="img-box img-style d-block"
                 >
                   <Image
@@ -48,6 +48,12 @@ export default function Collections({ parentClass = "tf-sp-2 pt-0" }) {
                     className="lazyload"
                     width={525}
                     height={407}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      aspectRatio: "525 / 407",
+                      objectFit: "cover",
+                    }}
                   />
                 </Link>
                 <div className="content">
@@ -61,7 +67,7 @@ export default function Collections({ parentClass = "tf-sp-2 pt-0" }) {
                     <p className="product-title-2">{item.title3}</p>
                   </div>
                   <Link
-                    href={`/shop-default`}
+                    href={`/products/${item.slug || ''}`}
                     className={`tf-btn-icon ${
                       item.whiteText ? "style-white" : ""
                     }`}

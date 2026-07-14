@@ -9,6 +9,7 @@ import {
   useVerifyOtpMutation,
   useResendOtpMutation,
   useChangePasswordMutation,
+  useUpdateCustomerMutation,
   useVerifyAuthLazyQuery,
 } from "@/graphql/generated";
 import type { CustomerFieldsFragment } from "@/graphql/generated/types";
@@ -29,6 +30,7 @@ interface AuthContextValue {
   verifyOtp: (email: string, otp: string) => Promise<AuthActionResult>;
   resendOtp: (email: string) => Promise<AuthActionResult>;
   changePassword: (oldPassword: string, newPassword: string) => Promise<AuthActionResult>;
+  updateProfile: (input: CustomerInput) => Promise<AuthActionResult>;
   logout: () => void;
 }
 
@@ -58,6 +60,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [verifyOtpMutation] = useVerifyOtpMutation();
   const [resendOtpMutation] = useResendOtpMutation();
   const [changePasswordMutation] = useChangePasswordMutation();
+  const [updateCustomerMutation] = useUpdateCustomerMutation();
   const [verifyAuthQuery] = useVerifyAuthLazyQuery({ fetchPolicy: "network-only" });
 
   const logout = useCallback(() => {
@@ -196,6 +199,34 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     [changePasswordMutation, customer]
   );
 
+  const updateProfile = useCallback(
+    async (input: CustomerInput): Promise<AuthActionResult> => {
+      if (!customer?.id) {
+        const message = "You must be logged in.";
+        toast.error(message);
+        return { success: false, message };
+      }
+      try {
+        const { data } = await updateCustomerMutation({
+          variables: { id: customer.id, input },
+        });
+        if (!data?.updateCustomer) {
+          const message = "Could not update profile.";
+          toast.error(message);
+          return { success: false, message };
+        }
+        setCustomer(data.updateCustomer);
+        toast.success("Profile updated.");
+        return { success: true };
+      } catch (error) {
+        const message = getErrorMessage(error);
+        toast.error(message);
+        return { success: false, message };
+      }
+    },
+    [updateCustomerMutation, customer]
+  );
+
   const value: AuthContextValue = {
     customer,
     isAuthenticated: !!customer,
@@ -205,6 +236,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     verifyOtp,
     resendOtp,
     changePassword,
+    updateProfile,
     logout,
   };
 

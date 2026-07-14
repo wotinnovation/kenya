@@ -10,7 +10,6 @@ export default function RealProductQuickview() {
     quickviewProduct: product,
     addProductToCart,
     isAddedToCartProducts,
-    setQuoteProduct,
   } = useContextElement();
 
   if (!product) return null;
@@ -87,13 +86,16 @@ export default function RealProductQuickview() {
                 </a>
               ) : (
                 <a
-                  href="#requestQuote"
-                  data-bs-toggle="modal"
-                  onClick={() => setQuoteProduct(product)}
+                  href="#shoppingCart"
+                  data-bs-toggle="offcanvas"
+                  onClick={() => addProductToCart(product)}
                   className="tf-btn btn-outline w-100 justify-content-center"
                   data-bs-dismiss="modal"
                 >
-                  <span className="caption">Get a Quote</span>
+                  <i className="icon-cart" />
+                  <span className="caption">
+                    {isAddedToCartProducts(product.id) ? "Added to Cart" : "Get a Quote"}
+                  </span>
                 </a>
               )}
               <Link

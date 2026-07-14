@@ -3,16 +3,18 @@
 import { useContextElement } from "@/context/Context";
 
 export default function RequestQuoteButton({ product, tooltipClass = "" }) {
-  const { setQuoteProduct } = useContextElement();
+  const { addProductToCart, isAddedToCartProducts } = useContextElement();
   return (
     <a
-      href="#requestQuote"
-      data-bs-toggle="modal"
-      onClick={() => setQuoteProduct(product)}
+      href="#shoppingCart"
+      data-bs-toggle="offcanvas"
+      onClick={() => addProductToCart(product)}
       className={`box-icon request-quote btn-icon-action hover-tooltip ${tooltipClass}`}
     >
-      <span className="icon icon-quote" />
-      <span className="tooltip">Request Quote</span>
+      <span className="icon icon-cart" />
+      <span className="tooltip">
+        {isAddedToCartProducts(product.id) ? "Added to Cart" : "Get a Quote"}
+      </span>
     </a>
   );
 }

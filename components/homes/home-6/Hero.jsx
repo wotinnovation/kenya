@@ -27,7 +27,7 @@ function shuffle(arr) {
 export default function Hero() {
   const [heroProducts, setHeroProducts] = useState([]);
   const [fetchProducts] = useProductsListLazyQuery();
-  const { addProductToCart, isAddedToCartProducts, setQuoteProduct } = useContextElement();
+  const { addProductToCart, isAddedToCartProducts } = useContextElement();
 
   useEffect(() => {
     let cancelled = false;
@@ -145,13 +145,16 @@ export default function Hero() {
                           </a>
                         ) : (
                           <a
-                            href="#requestQuote"
-                            data-bs-toggle="modal"
-                            onClick={() => setQuoteProduct(product)}
+                            href="#shoppingCart"
+                            data-bs-toggle="offcanvas"
+                            onClick={() => addProductToCart(product)}
                             className="card-product-cta-btn"
                             style={{ fontSize: 11, padding: "4px 10px" }}
                           >
-                            <span className="caption">Get a Quote</span>
+                            <i className="icon-cart" />
+                            <span className="caption">
+                              {isAddedToCartProducts(product.id) ? "Added" : "Get a Quote"}
+                            </span>
                           </a>
                         )}
                         <AddToWishlist product={product} />

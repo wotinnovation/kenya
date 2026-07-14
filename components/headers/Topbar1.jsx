@@ -2,10 +2,9 @@
 import React from "react";
 import CurrencySelect from "../common/CurrencySelect";
 import LanguageSelect from "../common/LanguageSelect";
-import { useAuth } from "@/context/AuthContext";
+import AccountDropdown from "./AccountDropdown";
 
 export default function Topbar1({ parentClass = "tf-topbar line-bt" }) {
-  const { isAuthenticated, logout } = useAuth();
   return (
     <div className={parentClass}>
       <div className="container">
@@ -44,18 +43,7 @@ export default function Topbar1({ parentClass = "tf-topbar line-bt" }) {
                   />
                 </div>
               </div>
-              <a
-                {...(isAuthenticated
-                  ? { href: "#", onClick: (e) => { e.preventDefault(); logout(); } }
-                  : { href: "#log", "data-bs-toggle": "modal" })}
-                className="tf-cur-item link"
-              >
-                <i className="icon-user-3" />
-                <span className="body-small">
-                  {isAuthenticated ? "Logout" : "My account:"}
-                </span>
-                {!isAuthenticated && <i className="icon-arrow-down" />}
-              </a>
+              <AccountDropdown />
             </div>
           </div>
         </div>

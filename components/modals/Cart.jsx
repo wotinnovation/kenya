@@ -110,7 +110,7 @@ export default function Cart() {
             </span>
           </p>
           <div className="box-btn">
-            <Link href={`/shop-cart`} className="tf-btn btn-gray">
+            <Link href={`/cart`} className="tf-btn btn-gray">
               <span className="text-white">View Cart</span>
             </Link>
             <Link href={`/checkout`} className="tf-btn">

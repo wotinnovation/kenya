@@ -14,7 +14,7 @@ import { formatPrice } from "@/utlis/price";
 
 export default function ProductDetailContent({ slug }) {
   const { data, loading, error } = useProductBySlugQuery({ variables: { slug } });
-  const { addProductToCart, isAddedToCartProducts, setQuoteProduct, addToWishlist, isAddedtoWishlist } = useContextElement();
+  const { addProductToCart, isAddedToCartProducts, addToWishlist, isAddedtoWishlist } = useContextElement();
   const product = data?.product;
   const [activeImage, setActiveImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -284,10 +284,13 @@ export default function ProductDetailContent({ slug }) {
                         </a>
                       </>
                     ) : (
-                      <a href="#requestQuote" data-bs-toggle="modal"
-                        onClick={() => setQuoteProduct(product)}
+                      <a href="#shoppingCart" data-bs-toggle="offcanvas"
+                        onClick={() => addProductToCart(product, quantity)}
                         className="card-product-cta-btn mb-2">
-                        <span className="caption">Get a Quote</span>
+                        <i className="icon-cart" />
+                        <span className="caption">
+                          {isAddedToCartProducts(product.id) ? "Added to Cart" : "Get a Quote"}
+                        </span>
                       </a>
                     )}
 

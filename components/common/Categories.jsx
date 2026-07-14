@@ -12,6 +12,27 @@ const FALLBACK_IMAGES = Array.from(
   (_, i) => `/images/collection/category-${i + 1}.png`
 );
 
+const capitalizeCategoryName = (name) => {
+  if (!name) return "";
+  const acronyms = ["UPS", "NVR", "DVR", "POE", "IP", "PDU", "POS", "VCS", "SFP", "VPN", "MIFI", "PABX", "LED", "AIO", "CCTV", "4G", "5G", "USB", "PC", "IT"];
+  const lowercaseWords = ["and", "or", "on", "the", "with", "for", "to", "in", "of", "&"];
+
+  return name
+    .split(" ")
+    .map((word, index) => {
+      const cleanWord = word.replace(/[^a-zA-Z0-9]/g, "");
+      if (acronyms.includes(cleanWord.toUpperCase())) {
+        return word.toUpperCase();
+      }
+      const lowerWord = word.toLowerCase();
+      if (lowercaseWords.includes(lowerWord) && index !== 0) {
+        return lowerWord;
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(" ");
+};
+
 export default function Categories({ parentClass = "" }) {
   const { data, loading } = useTopLevelCategoriesQuery();
   const categories = data?.categories ?? [];
@@ -113,7 +134,7 @@ export default function Categories({ parentClass = "" }) {
                     />
                   </Link>
                   <Link href={`/products/${item.slug}`} className="link body-text-3">
-                    {item.name}
+                    {capitalizeCategoryName(item.name)}
                   </Link>
                 </div>
               </SwiperSlide>

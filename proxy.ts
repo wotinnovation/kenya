@@ -1,18 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { AUTH_TOKEN_COOKIE } from "@/graphql/authToken";
 
-const PROTECTED_PATHS = [
-  "/my-account",
-  "/my-account-address",
-  "/my-account-edit",
-  "/my-account-orders",
-];
+const PROTECTED_ROOT = "/account";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isProtected = PROTECTED_PATHS.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`)
-  );
+  const isProtected =
+    pathname === PROTECTED_ROOT || pathname.startsWith(`${PROTECTED_ROOT}/`);
   if (!isProtected) {
     return NextResponse.next();
   }
@@ -29,10 +23,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/my-account",
-    "/my-account-address",
-    "/my-account-edit",
-    "/my-account-orders",
-  ],
+  matcher: ["/account", "/account/:path*"],
 };

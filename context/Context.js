@@ -1,6 +1,8 @@
 "use client";
 import { allProducts } from "@/data/products";
 import { backendImageUrl } from "@/graphql/imageUrl";
+import { useAuth } from "@/context/AuthContext";
+import { useAddToWishlistMutation, useRemoveFromWishlistMutation } from "@/graphql/generated";
 // import { openCartModal } from "@/utlis/openCartModal";
 // import { openWistlistModal } from "@/utlis/openWishlist";
 
@@ -12,17 +14,20 @@ export const useContextElement = () => {
 };
 
 export default function Context({ children }) {
+  const { customer, isAuthenticated } = useAuth();
+  const [addToWishlistMutation] = useAddToWishlistMutation();
+  const [removeFromWishlistMutation] = useRemoveFromWishlistMutation();
   const [cartProducts, setCartProducts] = useState([]);
   const [wishList, setWishList] = useState([]);
   const [compareItem, setCompareItem] = useState([]);
   const [quickViewItem, setQuickViewItem] = useState(allProducts[0]);
   const [quickAddItem, setQuickAddItem] = useState(1);
-  const [quoteProduct, setQuoteProduct] = useState(null);
   const [quickviewProduct, setQuickviewProduct] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [isCartHydrated, setIsCartHydrated] = useState(false);
   useEffect(() => {
     const subtotal = cartProducts.reduce((accumulator, product) => {
-      return accumulator + product.quantity * product.price;
+      return accumulator + product.quantity * (product.isQuote ? 0 : product.price);
     }, 0);
     setTotalPrice(subtotal);
   }, [cartProducts]);
@@ -38,6 +43,9 @@ export default function Context({ children }) {
     const isNormalizedItem = isRealProduct && "imgSrc" in productOrId;
     const id = isRealProduct ? productOrId.id : productOrId;
     if (!isAddedToCartProducts(id)) {
+      const realProductPrice = isRealProduct
+        ? productOrId.salePrice || productOrId.price
+        : undefined;
       const item = isNormalizedItem
         ? { ...productOrId, quantity: qty ? qty : 1 }
         : isRealProduct
@@ -46,7 +54,8 @@ export default function Context({ children }) {
             title: productOrId.name,
             slug: productOrId.slug,
             imgSrc: backendImageUrl(productOrId.image),
-            price: productOrId.salePrice || productOrId.price,
+            price: realProductPrice || 0,
+            isQuote: !(realProductPrice > 0),
             quantity: qty ? qty : 1,
           }
         : {
@@ -92,18 +101,33 @@ export default function Context({ children }) {
   const isAddedtoWishlist = (id) => wishList.some((elm) => elm.id == id);
   const isAddedtoCompareItem = (id) => compareItem.some((elm) => elm.id == id);
 
-  const addToWishlist = (productOrId) => {
+  const addToWishlist = async (productOrId) => {
     const id = typeof productOrId === "object" && productOrId !== null ? productOrId.id : productOrId;
     if (isAddedtoWishlist(id)) {
-      setWishList((pre) => pre.filter((elm) => elm.id != id));
+      removeFromWishlist(id);
       return;
     }
     const item = toListItem(productOrId);
-    if (item) setWishList((pre) => [...pre, item]);
+    if (!item) return;
+    setWishList((pre) => [...pre, item]);
+    if (isAuthenticated && customer?.id) {
+      try {
+        await addToWishlistMutation({ variables: { customerId: customer.id, productId: id } });
+      } catch (error) {
+        setWishList((pre) => pre.filter((elm) => elm.id != id));
+      }
+    }
   };
 
-  const removeFromWishlist = (id) => {
+  const removeFromWishlist = async (id) => {
     setWishList((pre) => pre.filter((elm) => elm.id != id));
+    if (isAuthenticated && customer?.id) {
+      try {
+        await removeFromWishlistMutation({ variables: { customerId: customer.id, productId: id } });
+      } catch (error) {
+        // Local removal already applied; backend will reconcile on next sync.
+      }
+    }
   };
   const addToCompareItem = (productOrId) => {
     const id = typeof productOrId === "object" && productOrId !== null ? productOrId.id : productOrId;
@@ -114,11 +138,13 @@ export default function Context({ children }) {
   const removeFromCompareItem = (id) => {
     setCompareItem((pre) => pre.filter((elm) => elm.id != id));
   };
+
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem("cartList"));
     if (items?.length) {
       setCartProducts(items);
     }
+    setIsCartHydrated(true);
   }, []);
 
   useEffect(() => {
@@ -135,9 +161,18 @@ export default function Context({ children }) {
     localStorage.setItem("wishlist", JSON.stringify(wishList));
   }, [wishList]);
 
+  useEffect(() => {
+    if (customer?.wishlist) {
+      setWishList(customer.wishlist.map((p) => toListItem(p)).filter(Boolean));
+    }
+    // Re-sync only when the customer's wishlist reference changes (login/session load).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customer?.wishlist]);
+
   const contextElement = {
     cartProducts,
     setCartProducts,
+    isCartHydrated,
     totalPrice,
     addProductToCart,
     isAddedToCartProducts,
@@ -149,8 +184,6 @@ export default function Context({ children }) {
     setQuickViewItem,
     quickAddItem,
     setQuickAddItem,
-    quoteProduct,
-    setQuoteProduct,
     quickviewProduct,
     setQuickviewProduct,
     addToCompareItem,

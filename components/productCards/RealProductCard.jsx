@@ -17,7 +17,6 @@ export default function RealProductCard({ product }) {
   const {
     addProductToCart,
     isAddedToCartProducts,
-    setQuoteProduct,
     setQuickviewProduct,
     addToWishlist,
     isAddedtoWishlist,
@@ -238,12 +237,15 @@ export default function RealProductCard({ product }) {
             </a>
           ) : (
             <a
-              href="#requestQuote"
-              data-bs-toggle="modal"
-              onClick={() => setQuoteProduct(product)}
+              href="#shoppingCart"
+              data-bs-toggle="offcanvas"
+              onClick={() => addProductToCart(cartProduct)}
               className="card-product-cta-btn"
             >
-              <span className="caption">Get a Quote</span>
+              <i className="icon-cart" />
+              <span className="caption">
+                {isAddedToCartProducts(product.id) ? "Added to Cart" : "Get a Quote"}
+              </span>
             </a>
           )}
         </div>

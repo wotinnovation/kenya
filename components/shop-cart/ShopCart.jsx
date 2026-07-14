@@ -1,20 +1,35 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useContextElement } from "@/context/Context";
 export default function ShopCart() {
   const {
     cartProducts,
     setCartProducts,
     totalPrice,
-
+    isCartHydrated,
     updateQuantity,
   } = useContextElement();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isCartHydrated && cartProducts.length === 0) {
+      router.replace("/products");
+    }
+  }, [isCartHydrated, cartProducts.length, router]);
 
   const removeItem = (id) => {
     setCartProducts((pre) => [...pre.filter((elm) => elm.id != id)]);
   };
+
+  const hasQuoteItems = cartProducts.some((product) => product.isQuote);
+  const totalLabel = hasQuoteItems
+    ? totalPrice > 0
+      ? `$${totalPrice.toFixed(2)} + Quote`
+      : "Quote"
+    : `$${totalPrice.toFixed(2)}`;
 
   return (
     <div className="s-shoping-cart tf-sp-2">
@@ -26,7 +41,7 @@ export default function ShopCart() {
               <span className="icon">
                 <i className="icon-shop-cart-1" />
               </span>
-              <Link href={`/shop-cart`} className="text-secondary body-text-3">
+              <Link href={`/cart`} className="text-secondary body-text-3">
                 Shopping Cart
               </Link>
             </div>
@@ -43,7 +58,7 @@ export default function ShopCart() {
                 <i className="icon-shop-cart-3" />
               </span>
               <Link
-                href={`/order-details`}
+                href={`/checkout/confirmation`}
                 className="link-secondary body-text-3"
               >
                 Confirmation
@@ -103,7 +118,7 @@ export default function ShopCart() {
                         className="tf-cart-item_price"
                       >
                         <p className="cart-price price-on-sale price-text fw-medium">
-                          ${product.price.toFixed(2)}
+                          {product.isQuote ? "Quote" : `$${product.price.toFixed(2)}`}
                         </p>
                       </td>
                       <td
@@ -141,7 +156,9 @@ export default function ShopCart() {
                         className="tf-cart-item_total"
                       >
                         <p className="cart-total total-price price-text fw-medium">
-                          ${(product.price * product.quantity).toFixed(2)}
+                          {product.isQuote
+                            ? "Quote"
+                            : `$${(product.price * product.quantity).toFixed(2)}`}
                         </p>
                       </td>
                       <td
@@ -184,7 +201,7 @@ export default function ShopCart() {
               </button>
             </div>
             <span className="last-total-price main-title fw-semibold">
-              Total: ${totalPrice.toFixed(2)}
+              Total: {totalLabel}
             </span>
           </div>
         </form>

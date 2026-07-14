@@ -15,7 +15,7 @@ export const shopPages = [
     heading: "SHOP LAYOUT",
     items: [
       { id: 1, href: "/shop-default", text: "Shop Default" },
-      { id: 2, href: "/shop-cart", text: "Shop Cart" },
+      { id: 2, href: "/cart", text: "Shop Cart" },
     ],
   },
   {
@@ -24,9 +24,9 @@ export const shopPages = [
     items: [
       { id: 1, href: "/wishlist", text: "Wishlist" },
       { id: 2, href: "/checkout", text: "Check Out" },
-      { id: 3, href: "/order-details", text: "Order Detail" },
+      { id: 3, href: "/account/orders", text: "Order Detail" },
       { id: 4, href: "/track-your-order", text: "Track Your Order" },
-      { id: 5, href: "/my-account", text: "My Account" },
+      { id: 5, href: "/account", text: "My Account" },
     ],
   },
 ];

@@ -206,7 +206,7 @@ export default function Footer1({ fullWidth = false }) {
                   <div className="tf-collapse-content">
                     <ul className="ft-menu-list">
                       <li>
-                        <Link href={`/my-account`} className="link">
+                        <Link href={`/account`} className="link">
                           My Account
                         </Link>
                       </li>

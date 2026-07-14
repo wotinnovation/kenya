@@ -192,7 +192,7 @@ export default function Details7() {
                         <i className="icon-cart-2" />
                       </a>
                       <Link
-                        href={`/shop-cart`}
+                        href={`/cart`}
                         className="tf-btn text-white btn-gray"
                       >
                         Buy now

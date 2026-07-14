@@ -44,7 +44,7 @@ export default function CategoryProductsSwiper({
   const nextClass = `nav-next-${categorySlug}`;
   const dotsClass = `dots-${categorySlug}`;
 
-  const { addProductToCart, isAddedToCartProducts, setQuoteProduct, setQuickviewProduct, addToWishlist, isAddedtoWishlist } = useContextElement();
+  const { addProductToCart, isAddedToCartProducts, setQuickviewProduct, addToWishlist, isAddedtoWishlist } = useContextElement();
   const hasPrice = (p) => typeof p === "number" && p > 0;
 
   if (loading) {
@@ -215,12 +215,15 @@ export default function CategoryProductsSwiper({
                         </a>
                       ) : (
                         <a
-                          href="#requestQuote"
-                          data-bs-toggle="modal"
-                          onClick={() => setQuoteProduct(product)}
+                          href="#shoppingCart"
+                          data-bs-toggle="offcanvas"
+                          onClick={() => addProductToCart(product)}
                           className="card-product-cta-btn"
                         >
-                          <span className="caption">Get a Quote</span>
+                          <i className="icon-cart" />
+                          <span className="caption">
+                            {isAddedToCartProducts(product.id) ? "Added to Cart" : "Get a Quote"}
+                          </span>
                         </a>
                       )}
                     </div>

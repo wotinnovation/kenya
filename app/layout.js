@@ -10,7 +10,6 @@ import AuthProvider from "@/context/AuthContext";
 import Cart from "@/components/modals/Cart";
 import Login from "@/components/modals/Login";
 import Register from "@/components/modals/Register";
-import RequestQuote from "@/components/modals/RequestQuote";
 import ScrollTop from "@/components/common/ScrollTop";
 import Quickview from "@/components/modals/Quickview";
 import RealProductQuickview from "@/components/modals/RealProductQuickview";
@@ -139,7 +138,6 @@ export default function RootLayout({ children }) {
                 {children}
                 <Login />
                 <Register />
-                <RequestQuote />
                 <Cart />
                 <Quickview />
                 <RealProductQuickview />

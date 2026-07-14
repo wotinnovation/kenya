@@ -35,5 +35,14 @@ export const CUSTOMER_FIELDS = gql`
       state
       zip
     }
+    wishlist {
+      id
+      name
+      slug
+      image
+      price
+      salePrice
+      regularPrice
+    }
   }
 `;

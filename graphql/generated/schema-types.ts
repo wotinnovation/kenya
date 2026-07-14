@@ -143,6 +143,7 @@ export type Customer = {
   shippingAddress?: Maybe<Address>;
   state?: Maybe<Scalars['String']['output']>;
   status?: Maybe<Scalars['String']['output']>;
+  wishlist?: Maybe<Array<Maybe<Product>>>;
   zip?: Maybe<Scalars['String']['output']>;
 };
 
@@ -169,18 +170,28 @@ export type Dimensions = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addToWishlist?: Maybe<Customer>;
   changePassword?: Maybe<Scalars['Boolean']['output']>;
   createContact?: Maybe<Contact>;
   createCustomer?: Maybe<Customer>;
   createOrder?: Maybe<Order>;
   deleteAccount?: Maybe<Scalars['Boolean']['output']>;
+  forgotPassword?: Maybe<Scalars['Boolean']['output']>;
   login?: Maybe<AuthPayload>;
+  removeFromWishlist?: Maybe<Customer>;
   resendOTP?: Maybe<Scalars['Boolean']['output']>;
+  resetPassword?: Maybe<Scalars['Boolean']['output']>;
   submitContact?: Maybe<Scalars['String']['output']>;
   toggleCustomerStatus?: Maybe<Customer>;
   updateCustomer?: Maybe<Customer>;
   verifyDetails?: Maybe<Customer>;
   verifyOTP?: Maybe<AuthPayload>;
+};
+
+
+export type MutationAddToWishlistArgs = {
+  customerId: Scalars['ID']['input'];
+  productId: Scalars['ID']['input'];
 };
 
 
@@ -211,6 +222,11 @@ export type MutationDeleteAccountArgs = {
 };
 
 
+export type MutationForgotPasswordArgs = {
+  email: Scalars['String']['input'];
+};
+
+
 export type MutationLoginArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -218,8 +234,21 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationRemoveFromWishlistArgs = {
+  customerId: Scalars['ID']['input'];
+  productId: Scalars['ID']['input'];
+};
+
+
 export type MutationResendOtpArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type MutationResetPasswordArgs = {
+  email: Scalars['String']['input'];
+  newPassword: Scalars['String']['input'];
+  token: Scalars['String']['input'];
 };
 
 
@@ -399,9 +428,11 @@ export type Product = {
   image?: Maybe<Scalars['String']['output']>;
   ingredients?: Maybe<Scalars['String']['output']>;
   isFeatured?: Maybe<Scalars['Boolean']['output']>;
+  keyFeatures?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   manageStock?: Maybe<Scalars['Boolean']['output']>;
   metaDescription?: Maybe<Scalars['String']['output']>;
   metaTitle?: Maybe<Scalars['String']['output']>;
+  model?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   price?: Maybe<Scalars['Float']['output']>;
   priceRange?: Maybe<PriceRange>;
@@ -411,6 +442,7 @@ export type Product = {
   shortDescription?: Maybe<Scalars['String']['output']>;
   sku?: Maybe<Scalars['String']['output']>;
   slug?: Maybe<Scalars['String']['output']>;
+  specifications?: Maybe<Array<Maybe<Specification>>>;
   status?: Maybe<Scalars['String']['output']>;
   stock?: Maybe<Scalars['Int']['output']>;
   stockStatus?: Maybe<Scalars['String']['output']>;
@@ -571,6 +603,12 @@ export type ShippingAddress = {
   phone?: Maybe<Scalars['String']['output']>;
   state?: Maybe<Scalars['String']['output']>;
   zip?: Maybe<Scalars['String']['output']>;
+};
+
+export type Specification = {
+  __typename?: 'Specification';
+  name?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
 };
 
 export type Variation = {

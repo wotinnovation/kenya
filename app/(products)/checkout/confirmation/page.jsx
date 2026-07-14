@@ -6,11 +6,11 @@ import Topbar1 from "@/components/headers/Topbar1";
 
 import OrderDetails from "@/components/shop-cart/OrderDetails";
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 
 export const metadata = {
-  title: "Order Details || Kanyha - Multipurpose React Nextjs eCommerce",
-  description: "Kanyha - Multipurpose React Nextjs eCommerce",
+  title: "Order Confirmation || Kenya eCommerce",
+  description: "Kenya eCommerce",
 };
 export default function page() {
   return (
@@ -30,13 +30,15 @@ export default function page() {
               <i className="icon icon-arrow-right" />
             </li>
             <li>
-              <span className="body-small"> Order Detail</span>
+              <span className="body-small"> Order Confirmation</span>
             </li>
           </ul>
         </div>
       </div>
 
-      <OrderDetails />
+      <Suspense fallback={null}>
+        <OrderDetails />
+      </Suspense>
 
       <RecentProducts />
       <Features2 />

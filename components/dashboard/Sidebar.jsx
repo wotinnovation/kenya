@@ -1,36 +1,39 @@
+"use client";
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
+const NAV_ITEMS = [
+  { href: "/account", label: "Dashboard" },
+  { href: "/account/orders", label: "Orders" },
+  { href: "/account/address", label: "Address" },
+  { href: "/account/edit#profile-details", label: "Account Details", match: "/account/edit" },
+  { href: "/account/edit#change-password", label: "Change Password", match: "/account/edit" },
+  { href: "/wishlist", label: "Wishlist" },
+];
+
 export default function Sidebar() {
+  const pathname = usePathname();
+  const { logout } = useAuth();
   return (
     <>
-      {" "}
+      {NAV_ITEMS.map((item) => (
+        <li key={item.href}>
+          <Link
+            href={item.href}
+            className={`my-account-nav-item ${
+              pathname === (item.match || item.href) ? "active" : ""
+            }`}
+          >
+            {item.label}
+          </Link>
+        </li>
+      ))}
       <li>
-        <span className="my-account-nav-item active">Dashboard</span>
-      </li>
-      <li>
-        <Link href={`/my-account-orders`} className="my-account-nav-item">
-          Orders
-        </Link>
-      </li>
-      <li>
-        <Link href={`/my-account-address`} className="my-account-nav-item">
-          Address
-        </Link>
-      </li>
-      <li>
-        <Link href={`/my-account-edit`} className="my-account-nav-item">
-          Account Details
-        </Link>
-      </li>
-      <li>
-        <Link href={`/wishlist`} className="my-account-nav-item">
-          Wishlist
-        </Link>
-      </li>
-      <li>
-        <Link href={`/`} className="my-account-nav-item">
+        <button type="button" className="my-account-nav-item" onClick={logout}>
           Logout
-        </Link>
+        </button>
       </li>
     </>
   );

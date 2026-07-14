@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useQuery, gql } from "@apollo/client";
+import { useAuth } from "@/context/AuthContext";
 
 const MOBILE_CATEGORIES = gql`
   query MobileMenuCategories {
@@ -27,10 +28,18 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
+const ACCOUNT_LINKS = [
+  { href: "/account", label: "My Account" },
+  { href: "/account/orders", label: "Orders" },
+  { href: "/account/edit#profile-details", label: "Profile" },
+  { href: "/account/edit#change-password", label: "Change Password" },
+];
+
 export default function MobileMenu() {
   const pathname = usePathname();
   const { data } = useQuery(MOBILE_CATEGORIES);
   const categories = data?.categories ?? [];
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <div className="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
@@ -135,6 +144,46 @@ export default function MobileMenu() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="mb-bottom">
+          <ul className="nav-ul-mb">
+            {isAuthenticated ? (
+              <>
+                {ACCOUNT_LINKS.map((link) => (
+                  <li key={link.href} className="nav-mb-item">
+                    <Link href={link.href} className="mb-menu-link" data-bs-dismiss="offcanvas">
+                      <span>{link.label}</span>
+                    </Link>
+                  </li>
+                ))}
+                <li className="nav-mb-item">
+                  <a
+                    href="#"
+                    className="mb-menu-link"
+                    data-bs-dismiss="offcanvas"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      logout();
+                    }}
+                  >
+                    <span>Logout</span>
+                  </a>
+                </li>
+              </>
+            ) : (
+              <li className="nav-mb-item">
+                <a
+                  href="#log"
+                  data-bs-toggle="modal"
+                  data-bs-dismiss="offcanvas"
+                  className="mb-menu-link"
+                >
+                  <span>My Account</span>
+                </a>
+              </li>
+            )}
+          </ul>
         </div>
       </div>
     </div>
